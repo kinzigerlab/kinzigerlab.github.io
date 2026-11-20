@@ -30,6 +30,39 @@
         a.removeAttribute("aria-current");
       }
     });
+    countView(name);
+  }
+
+  // ---- visit counting (GoatCounter: no cookies, nothing stored about the visitor).
+  // Each view is reported as its own page: "/" for home, then "/research", "/people", "/publications", "/join".
+  // Moving within a view (to eDNA, alumni, contact) is not counted again. If the counter script is
+  // missing or blocked, nothing happens.
+  var viewNames = { home: "Home", research: "Research", people: "People", publications: "Publications", join: "Join the lab" };
+  var counted = null;
+  function countView(name) {
+    if (name === counted || !viewNames[name]) { return; }
+    var vars = { path: name === "home" ? "/" : "/" + name, title: "The Kinziger Lab: " + viewNames[name] };
+    if (counted !== null) { vars.referrer = ""; }   // only the first view carries the site the visitor came from
+    counted = name;
+    var tries = 0;
+    (function send() {
+      var gc = window.goatcounter;
+      if (!gc || !gc.count) {
+        // the counter script loads after this one; give it ten seconds, then give up
+        if (tries < 50) { tries += 1; window.setTimeout(send, 200); }
+        return;
+      }
+      if ("visibilityState" in document && document.visibilityState !== "visible") {
+        var whenSeen = function () {
+          if (document.visibilityState !== "visible") { return; }
+          document.removeEventListener("visibilitychange", whenSeen);
+          gc.count(vars);
+        };
+        document.addEventListener("visibilitychange", whenSeen);
+        return;
+      }
+      gc.count(vars);
+    })();
   }
 
   function currentView() {

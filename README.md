@@ -16,3 +16,17 @@ The site is one page, `index.html`, plus the photographs in `img/`. GitHub Pages
 
 `src/style.css` holds the design. `src/site.js` is the small script behind the navigation and the publication
 filter. Python 3 is enough; nothing needs installing.
+
+## Visit counter
+
+The site counts visits with GoatCounter. It sets no cookies and stores nothing about visitors. The numbers are at
+https://kinzigerlab.goatcounter.com (sign-in required).
+
+- `count.v5.js` is GoatCounter's own counter script, version 5, unchanged. It is kept here so the site loads no
+  script from another server. Its fingerprint matches the one GoatCounter publishes for that version:
+  `sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ`
+- Each view is counted as its own page: `/`, `/research`, `/people`, `/publications`, `/join`. The code is under
+  "visit counting" in `src/site.js`.
+- The account name is `GOATCOUNTER`, at the end of `src/content.py`. Set it to `""` and rebuild to stop counting.
+- To leave your own visits out, open https://kinzigerlab.github.io/#toggle-goatcounter once in each browser you use.
+  Opening it again turns counting back on for that browser.

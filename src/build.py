@@ -577,7 +577,20 @@ FONT_LOCAL = f"""<style>
 NAV = [("research", "Research"), ("people", "People"), ("publications", "Publications"), ("join", "Join the lab")]
 
 
-def page(fonts):
+COUNTER_FILE = "count.v5.js"   # GoatCounter's counter script, version 5, kept beside index.html
+
+
+def counter_tag(on):
+    """The visit counter. Only the public copy in the repository carries it; drafts and previews do not."""
+    code = getattr(C, "GOATCOUNTER", "")
+    if not (on and code):
+        return ""
+    assert re.fullmatch(r"[a-z0-9][a-z0-9-]*", code), code
+    return (f'<script data-goatcounter="https://{code}.goatcounter.com/count" '
+            f"data-goatcounter-settings='{{\"no_onload\": true}}' async src=\"{COUNTER_FILE}\"></script>\n")
+
+
+def page(fonts, counter=False):
     nav = "".join(f'<li><a href="#{k}" data-nav="{k}">{esc(v)}</a></li>' for k, v in NAV)
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -618,7 +631,7 @@ def page(fonts):
 <script>
 {JS}
 </script>
-</body>
+{counter_tag(counter)}</body>
 </html>
 """
 
@@ -639,11 +652,13 @@ def main():
     if "--repo" in sys.argv:
         # Repository layout: this file sits in src/ and the website is the repository root.
         top = ROOT.parent
-        public = strip_draft(page(FONT_LINKS))
+        public = strip_draft(page(FONT_LINKS, counter=True))
         (top / "index.html").write_text(public, encoding="utf-8")
         (top / ".nojekyll").write_text("", encoding="utf-8")   # GitHub Pages: serve the files as they are
         used = sorted(set(re.findall(r'src="img/([^"]+)"', public)))
         missing = [n for n in used if not (top / "img" / n).exists()]
+        if COUNTER_FILE in public and not (top / COUNTER_FILE).exists():
+            missing.append(COUNTER_FILE + " (beside index.html)")
         print(f"wrote {top / 'index.html'}  ({len(public) / 1024:.0f} KB); photographs used: {len(used)}; "
               f"missing from img/: {', '.join(missing) if missing else 'none'}")
         return

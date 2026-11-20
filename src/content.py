@@ -630,3 +630,10 @@ CONTACT = {
     ],
 }
 UPDATED = "November 2026"
+
+# --------------------------------------------------------------------------
+# VISIT COUNTER
+# --------------------------------------------------------------------------
+# GoatCounter account name; the dashboard is at https://<name>.goatcounter.com.
+# Set this to "" to stop counting visits.
+GOATCOUNTER = "kinzigerlab"
