@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>The Kinziger Lab</title>
+<meta name="description" content="The Kinziger Lab at Cal Poly Humboldt uses environmental DNA and genetics to monitor and conserve the fishes of California's North Coast.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Libre+Franklin:ital,wght@0,300..700;1,300..700&amp;display=swap">
+<script>document.documentElement.classList.add("js");</script>
+<style>
+:root{
+  /* Layout: a left-aligned journal page. Section and topic names sit in a narrow margin column and
+     lists are ruled checklists, not cards. Blue marks environmental DNA, ochre marks genetics,
+     and everything else stays neutral. Waters are set in italic, as on a topographic map. */
+  --paper:#F2F5F2;
+  --surface:#FBFCFA;
+  --ink:#13241F;
+  --muted:#52625C;
+  --rule:#CFD8D2;
+  --river:#0D5B4D;
+  --on-river:#FFFFFF;
+  --edna:#1B6690;
+  --edna-wash:#E1ECF2;
+  --gen:#855A0B;
+  --gen-wash:#F4EAD2;
+  --note:#B26B00;
+  --note-ink:#5A3500;
+  --note-wash:#FFF0D2;
+  --font-display:"Libre Caslon Text","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --font-hero:"Libre Caslon Display","Libre Caslon Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --font-body:"Libre Franklin","Franklin Gothic Medium","Helvetica Neue",Arial,sans-serif;
+  --font-seq:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1815; --surface:#14211D; --ink:#E3EAE5; --muted:#9DB0A8; --rule:#2A3A33;
+    --river:#7ACCB7; --on-river:#0E1815;
+    --edna:#88C2E4; --edna-wash:#132B38;
+    --gen:#E2B863; --gen-wash:#33290F;
+    --note:#E0A44A; --note-ink:#F6DDB0; --note-wash:#372810;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1815; --surface:#14211D; --ink:#E3EAE5; --muted:#9DB0A8; --rule:#2A3A33;
+  --river:#7ACCB7; --on-river:#0E1815;
+  --edna:#88C2E4; --edna-wash:#132B38;
+  --gen:#E2B863; --gen-wash:#33290F;
+  --note:#E0A44A; --note-ink:#F6DDB0; --note-wash:#372810;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:1.0625rem;line-height:1.6}
+svg{max-width:100%}
+p{margin:0 0 1em}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;line-height:1.15;margin:0;text-wrap:balance}
+a{color:var(--river);text-decoration-thickness:1px;text-underline-offset:.18em}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--edna);outline-offset:2px;border-radius:2px}
+[id]{scroll-margin-top:5.5rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.wrap{max-width:72rem;margin-inline:auto;padding-inline:clamp(1rem,4vw,2.5rem)}
+.skip{position:absolute;left:-999rem;top:0}
+.skip:focus{left:1rem;top:1rem;z-index:100;background:var(--surface);padding:.5rem .75rem}
+.lede{font-size:1.25rem;line-height:1.5;max-width:40rem}
+.prose{max-width:42rem}
+.prose > :last-child{margin-bottom:0}
+.link-strong{font-weight:600}
+.more{margin:1rem 0 0}
+.plain-list{list-style:none;margin:0 0 1rem;padding:0}
+.plain-list li{padding:.4rem 0;border-top:1px solid var(--rule)}
+.plain-list li:first-child{border-top:0;padding-top:0}
+
+.btn{display:inline-block;background:var(--river);color:var(--on-river);font-weight:600;text-decoration:none;padding:.7rem 1.15rem;border-radius:.25rem}
+.btn:hover{filter:brightness(1.12)}
+
+/* ---------- draft notes (not part of the site) ---------- */
+.draftbar{background:var(--note-wash);color:var(--note-ink);font-size:.9rem;border-bottom:1px solid var(--note)}
+.draftbar .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1.25rem;align-items:center;justify-content:space-between;padding-block:.5rem}
+.draftbar p{margin:0}
+.draftbar button{font:inherit;font-weight:600;color:inherit;background:transparent;border:1px solid currentColor;border-radius:.25rem;padding:.2rem .7rem;cursor:pointer}
+.note{background:var(--note-wash);color:var(--note-ink);border-left:3px solid var(--note);padding:.65rem .9rem;font-size:.9rem;line-height:1.5;margin:1rem 0;max-width:46rem}
+.confirm{display:inline-block;background:var(--note-wash);color:var(--note-ink);font-family:var(--font-body);font-style:normal;font-size:.72rem;font-weight:700;line-height:1;padding:.25rem .45rem;border-radius:.2rem;vertical-align:middle;margin-left:.5rem;white-space:nowrap}
+html.notes-off .note,html.notes-off .confirm,html.notes-off .is-placeholder{display:none}
+
+/* ---------- header ---------- */
+.site-header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule)}
+.site-header .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.35rem 2rem;padding-block:.8rem}
+.wordmark{font-family:var(--font-display);font-size:1.4rem;line-height:1.15;color:var(--ink);text-decoration:none}
+.wordmark small{display:block;font-family:var(--font-body);font-size:.8rem;color:var(--muted);margin-top:.15rem}
+.nav{display:flex;flex-wrap:wrap;gap:.1rem 1.6rem;list-style:none;margin:0;padding:0}
+.nav a{display:block;padding:.3rem 0;font-size:.95rem;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:2px solid transparent}
+.nav a:hover{border-bottom-color:var(--rule)}
+.nav a[aria-current="page"]{border-bottom-color:var(--river);color:var(--river)}
+@media (max-width:52rem){.site-header{position:static}}
+
+/* ---------- views ---------- */
+html.js .view{display:none}
+html.js .view.is-active{display:block}
+.view{padding-bottom:1rem}
+.page-head{padding-block:clamp(2rem,5vw,3.5rem) clamp(1.25rem,3vw,2rem)}
+.page-head h1{font-family:var(--font-hero);font-size:clamp(2.1rem,4.6vw,3.1rem);letter-spacing:-.005em}
+.page-head .lede{margin:1rem 0 0}
+
+/* ---------- home: hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,4.5rem);align-items:end;padding-block:clamp(2.5rem,6vw,4.5rem) clamp(2.25rem,5vw,3.5rem)}
+.hero h1{font-family:var(--font-hero);font-size:clamp(2.3rem,5.6vw,3.9rem);line-height:1.04;letter-spacing:-.01em;margin-bottom:1.25rem}
+.hero .lede{margin-bottom:0}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;margin:1.6rem 0 0}
+.label-card{border:1px solid var(--ink);box-shadow:0 0 0 3px var(--paper),0 0 0 4px var(--ink);padding:1rem 1.15rem 1.1rem;font-size:.92rem;line-height:1.4;margin:4px}
+.label-card p{margin:0}
+.label-card .org{font-family:var(--font-display);font-size:1.15rem}
+.label-card .dept{color:var(--muted);margin-bottom:.75rem}
+.label-card dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.35rem 1rem;margin:0;border-top:1px solid var(--rule);padding-top:.7rem}
+.label-card dt{color:var(--muted)}
+.label-card dd{margin:0}
+@media (max-width:54rem){.hero{grid-template-columns:1fr;align-items:start}.label-card{max-width:26rem}}
+
+/* ---------- home: how eDNA works ---------- */
+.flow{background:var(--edna-wash);border-block:1px solid var(--rule)}
+.flow > .wrap{padding-block:clamp(2rem,5vw,3.25rem)}
+.flow-head{display:grid;grid-template-columns:minmax(0,12rem) minmax(0,1fr);column-gap:clamp(1.5rem,4vw,3.5rem);row-gap:.75rem;margin-bottom:2.25rem}
+.flow-head h2{font-size:1.5rem}
+.flow-head .lede{margin:0}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.75rem;position:relative}
+.steps::before{content:"";position:absolute;left:1.75rem;right:calc(20% - 3.15rem);top:1.75rem;border-top:1px solid var(--edna)}
+.step{position:relative}
+.step-icon{width:3.5rem;height:3.5rem;border-radius:50%;background:var(--edna-wash);border:1px solid var(--edna);color:var(--edna);display:grid;place-items:center}
+.step-icon svg{width:1.9rem;height:1.9rem;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.step h3{font-size:1.25rem;margin:.9rem 0 .35rem}
+.step h3 .n{color:var(--edna);margin-right:.4em}
+.step p{font-size:.95rem;line-height:1.5;margin:0}
+.seq{display:block;margin-top:.6rem;font-size:.8rem;color:var(--muted)}
+.seq code{display:block;font-family:var(--font-seq);font-size:.74rem;letter-spacing:.03em;color:var(--edna);overflow-wrap:anywhere;margin-top:.15rem}
+@media (max-width:64rem){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.steps::before{display:none}}
+@media (max-width:36rem){.steps{grid-template-columns:1fr}.step{display:grid;grid-template-columns:3.5rem minmax(0,1fr);column-gap:1rem}.step h3{margin-top:.15rem}}
+
+/* ---------- bands: margin heading + content ---------- */
+.band{display:grid;grid-template-columns:minmax(0,12rem) minmax(0,1fr);column-gap:clamp(1.5rem,4vw,3.5rem);row-gap:1.25rem;padding-block:clamp(2rem,5vw,3.25rem);border-top:1px solid var(--rule)}
+.flow + .wrap > .band:first-child,.page-head + .band{border-top:0}
+.band-head h2{font-size:1.5rem}
+.band-head p{color:var(--muted);font-size:.9rem;line-height:1.45;margin:.5rem 0 0}
+@media (max-width:50rem){.band,.flow-head{grid-template-columns:1fr}}
+
+.pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,4vw,3rem)}
+.pillar{border-top:4px solid var(--c);padding-top:1rem}
+.pillar--edna{--c:var(--edna)}
+.pillar--gen{--c:var(--gen)}
+.pillar h3{font-size:1.5rem;margin-bottom:.6rem}
+.pillar p{margin-bottom:.8rem}
+.pillar p:last-child{margin-bottom:0}
+@media (max-width:40rem){.pillars{grid-template-columns:1fr}}
+
+.places{list-style:none;margin:0;padding:0}
+.places li{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 8.5rem;gap:.4rem 2rem;align-items:baseline;padding:1rem 0;border-top:1px solid var(--rule)}
+.places li:first-child{border-top:0;padding-top:0}
+.places + .note{margin-bottom:0}
+.place{font-family:var(--font-display);font-style:italic;font-size:1.4rem;line-height:1.2}
+.places p{margin:0}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap}
+@media (max-width:60rem){.places li{grid-template-columns:1fr}}
+
+.tag{display:inline-block;font-size:.78rem;font-weight:600;line-height:1;padding:.32rem .55rem;border-radius:999px;white-space:nowrap}
+.tag--edna{color:var(--edna);background:var(--edna-wash)}
+.tag--gen{color:var(--gen);background:var(--gen-wash)}
+.tag--plain{color:var(--muted);box-shadow:inset 0 0 0 1px var(--rule)}
+
+.cols-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,4vw,3rem)}
+.mini h3{font-family:var(--font-body);font-weight:600;font-size:1rem;margin-bottom:.25rem}
+.mini ul{list-style:none;margin:0;padding:0}
+.mini li{padding:.75rem 0;border-top:1px solid var(--rule);line-height:1.4}
+.mini li:first-child{border-top:0}
+.mini li a{font-weight:500}
+.mini .meta{display:block;color:var(--muted);font-size:.9rem;margin-top:.2rem}
+@media (max-width:44rem){.cols-2{grid-template-columns:1fr}}
+
+/* ---------- research ---------- */
+.jump{margin:1.1rem 0 0;font-size:.95rem;color:var(--muted)}
+.now{border:1px solid var(--rule);background:var(--surface);padding:1.1rem 1.25rem;border-radius:.25rem}
+.now h2{font-family:var(--font-body);font-weight:600;font-size:1rem;margin-bottom:.6rem}
+.now ul{margin:0;padding-left:1.1rem;font-size:.95rem;line-height:1.45}
+.now li{margin-bottom:.4rem}
+.now .note{margin-bottom:0}
+.part{border-top:4px solid var(--c);padding-top:1.25rem;margin-top:clamp(2rem,5vw,3.25rem)}
+.part--edna{--c:var(--edna)}
+.part--gen{--c:var(--gen)}
+.part--plain{--c:var(--ink)}
+.part h2{font-size:2rem}
+.part .lede{margin:.75rem 0 0}
+.topic{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);column-gap:clamp(1.5rem,4vw,3.5rem);row-gap:.6rem;padding:1.75rem 0;border-top:1px solid var(--rule)}
+.part + .topic{border-top:0}
+.topic h3{font-size:1.3rem;line-height:1.25}
+.topic-body{max-width:42rem}
+.topic-body > :last-child{margin-bottom:0}
+.refs{font-size:.9rem;color:var(--muted)}
+@media (max-width:50rem){.topic{grid-template-columns:1fr}}
+
+/* ---------- people ---------- */
+.portrait{max-width:12rem}
+.portrait img{aspect-ratio:4/5;object-fit:cover;border-radius:.25rem}
+.portrait figcaption{font-size:.8rem;color:var(--muted);margin-top:.45rem}
+.pi h2{font-size:2rem}
+.roles{list-style:none;margin:.5rem 0 1rem;padding:0;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem 2.5rem;margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--rule);font-size:.95rem;line-height:1.45}
+.facts h3{font-family:var(--font-body);font-weight:600;font-size:.95rem;margin-bottom:.4rem}
+.facts ul,.facts dl{margin:0;padding:0;list-style:none}
+.facts li{margin-bottom:.3rem;overflow-wrap:anywhere}
+.facts dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .8rem}
+.facts dt{font-weight:600}
+.facts dd{margin:0}
+@media (max-width:60rem){.facts{grid-template-columns:1fr}}
+
+.roster{list-style:none;margin:0;padding:0}
+.roster li{display:grid;grid-template-columns:3rem minmax(0,19rem) minmax(0,1fr);gap:.25rem 1.25rem;align-items:center;padding:.85rem 0;border-top:1px solid var(--rule)}
+.mono{width:3rem;height:3rem;border-radius:50%;border:1px solid var(--rule);background:var(--surface);display:grid;place-items:center;font-family:var(--font-display);font-size:1.05rem;color:var(--muted)}
+.roster .name{display:block;font-family:var(--font-display);font-size:1.2rem;line-height:1.25}
+.roster .role{display:block;color:var(--muted);font-size:.9rem}
+.roster .proj{font-size:.95rem}
+.roster .is-placeholder .name{color:var(--muted);font-style:italic}
+.roster .is-placeholder .mono{border-style:dashed}
+@media (max-width:46rem){.roster li{grid-template-columns:3rem minmax(0,1fr)}.roster .proj{grid-column:2}}
+
+.legend{line-height:1.9}
+.dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.5rem;box-shadow:inset 0 0 0 1px var(--muted)}
+.dot--edna{background:var(--edna);box-shadow:none}
+.dot--gen{background:var(--gen);box-shadow:none}
+.alumni{list-style:none;margin:0;padding:0}
+.alumni li{display:grid;grid-template-columns:3.25rem minmax(0,12rem) minmax(0,1fr) minmax(0,13rem);gap:.3rem 1.5rem;align-items:baseline;padding:.9rem 0;border-top:1px solid var(--rule)}
+.alumni .alumni-head{border-top:0;padding:.25rem 0 .5rem;font-size:.82rem;font-weight:600;color:var(--muted)}
+.alumni .yr{font-variant-numeric:tabular-nums;color:var(--muted)}
+.alumni .name{font-family:var(--font-display);font-size:1.1rem;line-height:1.3}
+.alumni .thesis{font-size:.95rem;line-height:1.45}
+.alumni .after{font-size:.9rem;line-height:1.45;color:var(--muted)}
+@media (max-width:64rem){.alumni li{grid-template-columns:3.25rem minmax(0,1fr)}.alumni .thesis,.alumni .after{grid-column:2}.alumni .alumni-head{display:none}}
+
+/* ---------- publications ---------- */
+.pub-tools{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{font:inherit;font-size:.88rem;font-weight:500;color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.3rem .75rem;cursor:pointer}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip .n{opacity:.7;margin-left:.4em;font-variant-numeric:tabular-nums}
+.pub-search{display:flex;align-items:center;gap:.6rem;font-size:.9rem;font-weight:500}
+.pub-search input{font:inherit;font-weight:400;font-size:.95rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:.25rem;padding:.4rem .6rem;width:15rem;max-width:100%}
+.pub-count,.pub-empty{color:var(--muted);font-size:.9rem;margin:0 0 .25rem}
+.pubs{list-style:none;margin:0;padding:0}
+.pubs li{display:grid;grid-template-columns:3.5rem minmax(0,1fr);column-gap:1.5rem;padding:1rem 0;border-top:1px solid var(--rule)}
+.pubs li[hidden]{display:none}
+.pub-year{font-family:var(--font-display);font-size:1.15rem;line-height:1.5;font-variant-numeric:tabular-nums;color:var(--muted);visibility:hidden}
+.pubs .first-of-year .pub-year{visibility:visible}
+.pub-body{max-width:54rem}
+.pub-title{font-weight:600;line-height:1.4;margin:0 0 .25rem}
+.pub-cite{margin:0 0 .5rem;font-size:.95rem;line-height:1.5}
+.pub-authors{color:var(--muted)}
+.pub-authors strong{color:var(--ink);font-weight:600}
+.pub-meta{margin:0;display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:center;font-size:.88rem}
+.pub-meta a{overflow-wrap:anywhere}
+.press{color:var(--muted)}
+.alum{text-decoration:underline dotted;text-underline-offset:.22em;text-decoration-thickness:1px}
+@media (max-width:40rem){.pubs li{grid-template-columns:1fr}.pub-year{display:none}.pubs .first-of-year .pub-year{display:block}}
+
+/* ---------- join ---------- */
+.join-list{list-style:none;margin:0;padding:0}
+.join-list li{padding:1.1rem 0;border-top:1px solid var(--rule)}
+.join-list li:first-child{border-top:0;padding-top:0}
+.join-list h3{font-family:var(--font-body);font-weight:600;font-size:1.08rem;line-height:1.3;margin-bottom:.3rem}
+.join-list p{margin:0;max-width:40rem}
+.deadlines{border-collapse:collapse;margin:0 0 .9rem}
+.deadlines th,.deadlines td{text-align:left;padding:.6rem 2rem .6rem 0;border-top:1px solid var(--rule);vertical-align:top}
+.deadlines tr:first-child th,.deadlines tr:first-child td{border-top:0;padding-top:0}
+.deadlines th{font-weight:600;white-space:nowrap}
+
+/* ---------- photographs ---------- */
+figure{margin:0}
+.fig img,.photo-band img,.portrait img{display:block;width:100%;height:auto;background:var(--rule)}
+.fig img{border-radius:2px}
+.fig figcaption,.photo-band figcaption p{font-size:.85rem;line-height:1.45;color:var(--muted);margin:.55rem 0 0}
+.where{font-family:var(--font-display);font-style:italic;font-size:1rem;color:var(--ink)}
+.fig .where{display:block;margin-bottom:.1rem}
+.photo-band .where{margin-right:.4em}
+.credit{white-space:nowrap}
+.topic-body > .fig{margin-bottom:1.4rem}
+.photo-band{border-top:1px solid var(--rule)}
+.photo-band img{aspect-ratio:2.25/1;max-height:36rem;object-fit:cover;object-position:50% 39%}
+.photo-band figcaption{padding-bottom:1.1rem}
+.photo-band .note{margin:.6rem 0 0}
+@media (max-width:40rem){.photo-band img{aspect-ratio:4/3}}
+.strip{margin:clamp(1.5rem,3.5vw,2.25rem) 0 0}
+.strip ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.9rem,2.2vw,1.75rem)}
+.strip img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;background:var(--rule);border-radius:2px}
+.strip-step{display:block;font-family:var(--font-display);font-size:1.2rem;line-height:1.25;margin-top:.6rem}
+.strip figcaption{font-size:.85rem;line-height:1.45;color:var(--muted);margin:.8rem 0 0;max-width:46rem}
+.strip .note{margin-bottom:0}
+@media (max-width:44rem){.strip ol{grid-template-columns:1fr;gap:1.25rem}}
+.photo-slot{border:1px dashed var(--note);background:var(--note-wash);color:var(--note-ink);font-size:.9rem;line-height:1.5;padding:1.5rem 1.25rem;margin:0 0 1.4rem;border-radius:2px}
+.head-split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,4rem);align-items:start}
+@media (max-width:54rem){.head-split{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+.site-footer{border-top:1px solid var(--rule);background:var(--surface);margin-top:2rem}
+.site-footer .wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:2rem;padding-block:2.5rem 2rem;font-size:.95rem;line-height:1.5}
+.site-footer h2{font-size:1.4rem;margin-bottom:.6rem}
+.site-footer h3{font-family:var(--font-body);font-weight:600;font-size:.95rem;margin-bottom:.5rem}
+.site-footer p{margin:0 0 .2rem}
+.site-footer ul{list-style:none;margin:0;padding:0}
+.site-footer li{margin-bottom:.3rem}
+.site-footer a{overflow-wrap:anywhere}
+.site-footer .fine{grid-column:1/-1;color:var(--muted);font-size:.85rem;border-top:1px solid var(--rule);padding-top:1rem;margin:0}
+@media (max-width:50rem){.site-footer .wrap{grid-template-columns:1fr}}
+
+@media print{.draftbar,.note,.confirm,.photo-slot,.pub-tools{display:none}.site-header{position:static}html.js .view{display:block}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="#home" data-nav="home">The Kinziger Lab<small>eDNA and fish conservation genetics</small></a>
+    <nav aria-label="Main"><ul class="nav"><li><a href="#research" data-nav="research">Research</a></li><li><a href="#people" data-nav="people">People</a></li><li><a href="#publications" data-nav="publications">Publications</a></li><li><a href="#join" data-nav="join">Join the lab</a></li></ul></nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="view" id="home" data-view="home" aria-label="Home">
+  <div class="wrap hero">
+    <div>
+      <h1>Environmental DNA and conservation genetics of fishes</h1>
+      <p class="lede">We are a research lab in the Department of Fisheries Biology at Cal Poly Humboldt. We detect fish from the DNA they leave in water, and we use genetic data to guide the conservation of salmon, lamprey, tidewater goby and other fishes of California&#x27;s North Coast.</p>
+      <p class="actions"><a class="btn" href="#research">See our research</a> <a class="link-strong" href="#join">Join the lab</a></p>
+    </div>
+    <div class="label-card">
+      <p class="org">Cal Poly Humboldt</p>
+      <p class="dept">Department of Fisheries Biology</p>
+      <dl><dt>Location</dt><dd>Arcata, California</dd><dt>Lab lead</dt><dd>Andrew Kinziger, Professor and Chair</dd><dt>M.S. graduates</dt><dd>22 since 2006</dd></dl>
+    </div>
+  </div>
+
+  <figure class="photo-band">
+    <img src="img/lake-earl-2007.jpg" width="2000" height="1500" alt="Two researchers in chest waders pull a seine net through the reedy shallows of a coastal lagoon." decoding="async">
+    <figcaption class="wrap"><p><span class="where">Lake Earl, Del Norte County</span> Pulling a seine through the lagoon shallows, June 2007. <span class="credit">Photo: Kinziger Lab</span></p></figcaption>
+  </figure>
+
+  <div class="flow">
+    <div class="wrap">
+      <div class="flow-head">
+        <h2>How environmental DNA works</h2>
+        <p class="lede">Fish shed cells into the water around them. A water sample carries enough of their DNA to show which species are present, without netting or handling a fish.</p>
+      </div>
+      <ol class="steps">
+        <li class="step"><div class="step-icon"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M20 6h8M21.5 6v7l-5 7v19a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3V20l-5-7V6"/><path d="M16.5 29c2.6-2 5 2 7.5 0s5-2 7.5 0"/></svg></div><div class="step-text"><h3><span class="n">1</span>Collect</h3><p>One or two liters of water from a river, lagoon or bay, with replicate samples at each site.</p></div></li><li class="step"><div class="step-icon"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M9 8h30L29 22H19L9 8z"/><path d="M19 22v6h10v-6"/><path d="M14 28h20"/><path d="M24 33v3M24 40v2"/></svg></div><div class="step-text"><h3><span class="n">2</span>Filter</h3><p>The water passes through a fine filter that traps cells and loose DNA. Filters are frozen or preserved in the field.</p></div></li><li class="step"><div class="step-icon"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M14 9h20"/><path d="M17 9v19l7 13 7-13V9"/><path d="M17 25h14"/></svg></div><div class="step-text"><h3><span class="n">3</span>Extract</h3><p>DNA is purified from each filter in a clean lab, alongside blanks that would reveal contamination.</p></div></li><li class="step"><div class="step-icon"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 6v34h34"/><path d="M8 36c11 0 13-1 17-12s7-13 17-13"/><path d="M8 25h34" stroke-dasharray="2 3.5"/></svg></div><div class="step-text"><h3><span class="n">4</span>Amplify</h3><p>qPCR targets a single species. Metabarcoding copies a short gene from every fish in the sample and sequences them all.<span class="seq">MiFish-U forward primer for the 12S gene<code>GTCGGTAAAACTCGTGCCAGC</code></span></p></div></li><li class="step"><div class="step-icon"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="8" y="8" width="8" height="8" fill="currentColor"/><rect x="20" y="8" width="8" height="8"/><rect x="32" y="8" width="8" height="8" fill="currentColor"/><rect x="8" y="20" width="8" height="8"/><rect x="20" y="20" width="8" height="8" fill="currentColor"/><rect x="32" y="20" width="8" height="8" fill="currentColor"/><rect x="8" y="32" width="8" height="8" fill="currentColor"/><rect x="20" y="32" width="8" height="8"/><rect x="32" y="32" width="8" height="8"/></svg></div><div class="step-text"><h3><span class="n">5</span>Interpret</h3><p>Occupancy models use the replicate samples to estimate how likely we were to miss a species that was there.</p></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="band">
+      <div class="band-head"><h2>What we study</h2></div>
+      <div class="pillars"><div class="pillar pillar--edna"><h3>Environmental DNA</h3><p>We develop eDNA methods and put them to work in monitoring programs: endangered tidewater goby along the whole California coast, salmon returning to the Klamath River after dam removal, coho salmon in small streams, and entire fish communities from Humboldt Bay to the ocean offshore.</p><p><a class="link-strong" href="#edna">eDNA research</a></p></div><div class="pillar pillar--gen"><h3>Conservation genetics and genomics</h3><p>We use genetic data to find the genes behind salmon run timing and lamprey life histories, to measure how isolated small populations are, to trace where introduced fishes came from, and to evaluate hatchery programs.</p><p><a class="link-strong" href="#genetics">Genetics research</a></p></div></div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Where we work</h2><p>Rivers, lagoons and bays from north to south, then the coast as a whole and the ocean offshore.</p></div>
+      <div>
+        <ul class="places"><li><span class="place">Smith River</span><p>Coho salmon surveys by eDNA, and an introduced population of Klamath smallscale sucker traced to its source.</p><span class="tags"><span class="tag tag--edna">eDNA</span><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">Klamath River</span><p>Daily eDNA sampling at the former Iron Gate Dam site follows salmon and steelhead back into the upper basin, and eDNA metabarcoding in the estuary watches for aquatic invasive species. Genetics of Pacific lamprey, Chinook salmon and speckled dace.</p><span class="tags"><span class="tag tag--edna">eDNA</span><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">Trinity River</span><p>Spring-run and fall-run Chinook salmon, and the genetics of run timing.</p><span class="tags"><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">Big Lagoon and the North Coast lagoons</span><p>Endangered tidewater goby: population genetics, field tests of eDNA methods, and a yearly population estimate at Big Lagoon.</p><span class="tags"><span class="tag tag--edna">eDNA</span><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">Mad River</span><p>More than four decades of hatchery steelhead, read through their genetics.</p><span class="tags"><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">Humboldt Bay</span><p>A year of water samples, taken every two weeks, detected 97 fish species.</p><span class="tags"><span class="tag tag--edna">eDNA</span></span></li><li><span class="place">Eel River</span><p>Where introduced Sacramento pikeminnow came from, and eDNA surveys of the headwaters ahead of dam removal.</p><span class="tags"><span class="tag tag--edna">eDNA</span><span class="tag tag--gen">Genetics</span></span></li><li><span class="place">The California coast</span><p>Coastwide eDNA surveys of lagoons and estuaries for tidewater goby, along the length of the state, and metabarcoding of fish communities in ocean habitats near shore.</p><span class="tags"><span class="tag tag--edna">eDNA</span></span></li><li><span class="place">Offshore wind energy areas</span><p>Water sampled at depth on survey cruises aboard R/V North Wind, for a baseline of the fish community in the Humboldt Wind Energy Area.</p><span class="tags"><span class="tag tag--edna">eDNA</span></span></li></ul>
+        
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Recent work</h2></div>
+      <div class="cols-2">
+        <div class="mini"><h3>Latest papers</h3><ul><li><a href="https://doi.org/10.1093/jhered/esag041" rel="noopener">A genome assembly of the speckled dace, <i>Rhinichthys osculus</i></a><span class="meta"><i>Journal of Heredity</i>, 2026</span></li><li><a href="https://doi.org/10.1111/1755-0998.14049" rel="noopener">Hīkina te mānuka: Advancing Indigenous Leadership in Molecular Ecology</a><span class="meta"><i>Molecular Ecology Resources</i>, 2025</span></li><li><a href="https://doi.org/10.1007/s10592-024-01651-5" rel="noopener">Contemporary evolution of neutral genetic structure in introduced Klamath smallscale suckers (<i>Catostomus rimiculus</i>) recapitulates native patterns</a><span class="meta"><i>Conservation Genetics</i>, 2024</span></li><li><a href="https://doi.org/10.1093/jhered/esae053" rel="noopener">Reference genome for the endangered, genetically subdivided, northern tidewater goby, <i>Eucyclogobius newberryi</i></a><span class="meta"><i>Journal of Heredity</i>, 2024</span></li><li><a href="https://doi.org/10.1002/nafm.10993" rel="noopener">Comparison of environmental DNA and underwater visual count surveys for detecting juvenile Coho Salmon in small rivers</a><span class="meta"><i>North American Journal of Fisheries Management</i>, 2024</span></li></ul>
+          <p class="more"><a class="link-strong" href="#publications">All publications</a></p></div>
+        <div class="mini"><h3>Recently finished theses</h3><ul><li><a href="https://digitalcommons.humboldt.edu/etd/2554" rel="noopener">The effects of temperature on the persistence of environmental DNA in self-preserving filters</a><span class="meta">Megan Boche, M.S. 2026</span></li><li><a href="https://digitalcommons.humboldt.edu/etd/2533" rel="noopener">Using environmental DNA metabarcoding to investigate diversity and seasonal variation of fishes in Humboldt Bay, California</a><span class="meta">Johnathon M. Richardson, M.S. 2025</span></li><li><a href="https://digitalcommons.humboldt.edu/etd/735" rel="noopener">Using environmental DNA methods for estimating juvenile Chinook salmon abundance</a><span class="meta">Jacqueline M. Bridegum, M.S. 2024</span></li><li><a href="https://digitalcommons.humboldt.edu/etd/727" rel="noopener">Evaluating the utility of tracers to characterize environmental DNA transport and inform detection of fishes in small streams</a><span class="meta">Gavin B. Bandy, M.S. 2024</span></li></ul>
+          <p class="more"><a class="link-strong" href="#alumni">All lab alumni</a></p></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Prospective students</h2></div>
+      <div class="prose">
+        <p class="lede">Applications for fall admission to the Natural Resources M.S. program close on February 1. If your research interests match the lab's work, let Andrew know.</p>
+        <p><a class="btn" href="#join">How to join the lab</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="research" data-view="research" aria-label="Research">
+  <div class="wrap">
+    <div class="page-head head-split">
+      <div>
+        <h1>Research</h1>
+        <p class="lede">We use DNA to answer practical questions about fishes: where a species lives, how many there are, how its populations are connected and what sets them apart. Most of the work is on California&#x27;s North Coast, alongside the agencies, Tribes and organizations that manage these fish.</p>
+        <p class="jump">Jump to <a href="#edna">environmental DNA</a>, <a href="#genetics">conservation genetics and genomics</a> or <a href="#partners">working with us</a>.</p>
+      </div>
+      <div class="now">
+        <h2>Under way now</h2>
+        <ul><li>Daily eDNA sampling on the Klamath River at the former Iron Gate Dam site</li><li>Early detection of aquatic invasive species in the Klamath River estuary, pairing eDNA metabarcoding with conventional sampling</li><li>Fish community metabarcoding in Humboldt Bay and North Coast estuaries</li><li>Fish eDNA on the offshore surveys of the Humboldt Wind Energy Area, aboard R/V North Wind</li><li>Sacramento pikeminnow and rainbow trout distribution in the upper Eel River ahead of dam removal</li><li>Sampling design and field-workflow tests for tidewater goby eDNA</li><li>Reference sequences for northern California fishes</li><li>eDNA detection of non-natal Chinook rearing in the Sacramento River</li></ul>
+        
+      </div>
+    </div>
+
+    <div class="part part--edna" id="edna">
+      <h2>Environmental DNA</h2>
+      <p class="lede">Fish leave DNA in the water. We filter it out, read it, and use it to find species without netting, snorkeling or handling a single fish. For more than a decade the lab has tested how well that works and built it into monitoring programs.</p>
+      <figure class="strip"><ol><li><img src="img/lab-filter-2026.jpg" width="1200" height="800" alt="At a lab bench beside a window, a student in blue gloves pours a water sample from a bag into a filter funnel on a vacuum manifold." loading="lazy" decoding="async"><span class="strip-step">Filter</span></li><li><img src="img/lab-pcr-setup-2026.jpg" width="1200" height="800" alt="Seen through the glass front of a PCR hood, a gloved student holds a repeating pipette over a 96-well plate." loading="lazy" decoding="async"><span class="strip-step">Extract and prepare</span></li><li><img src="img/lab-qpcr-2026.jpg" width="1200" height="800" alt="A student holds a sealed 96-well plate at the open tray of a QuantStudio 3 qPCR instrument while a second student looks on." loading="lazy" decoding="async"><span class="strip-step">Amplify</span></li></ol><figcaption>Levy Young filters water samples to capture eDNA, performs DNA extraction and qPCR preparation in a dedicated PCR hood and, with Joey Salazar, loads a prepared plate into the QuantStudio 3 qPCR instrument. Both were Fisheries Biology undergraduates working in the lab. June 2026. <span class="credit">Photos: Kellie Jo Brown, Cal Poly Humboldt</span></figcaption></figure>
+    </div>
+    <article class="topic"><h3>Tidewater goby along the whole California coast</h3><div class="topic-body"><figure class="fig"><img src="img/tidewater-goby.jpg" width="1400" height="603" alt="A tidewater goby, a small mottled olive fish with two dorsal fins, resting on the bottom of a clear photo tank." loading="lazy" decoding="async"><figcaption>A tidewater goby (<i>Eucyclogobius newberryi</i>) in a field photo tank. <span class="credit">Photo: Kinziger Lab</span></figcaption></figure><p>The endangered tidewater goby lives in coastal lagoons and estuaries, where surveys with nets are slow and can miss it. We designed a qPCR assay for the species and showed that water samples detect gobies nearly twice as reliably as seining. We then surveyed roughly 200 sites along all 1,350 km of the California coast, and repeated the survey a year later to estimate how often goby populations wink out and recolonize.</p>
+<p>Current work asks how many water samples a site needs and compares field filtration systems side by side. Alongside the eDNA work, we have estimated the size of the Big Lagoon population by mark and recapture every year since 2008.</p><p class="refs">Read more: <a href="https://doi.org/10.1111/1755-0998.12501" rel="noopener">Schmelzle and Kinziger 2016</a>, <a href="https://doi.org/10.1007/s10592-019-01161-9" rel="noopener">Sutter and Kinziger 2019</a>, <a href="https://doi.org/10.1111/mec.15693" rel="noopener">Martel et al. 2021</a></p></div></article><article class="topic"><h3>Salmon returning to the Klamath after dam removal</h3><div class="topic-body"><figure class="fig"><img src="img/klamath-edna-sampler-2026.jpg" width="1600" height="1067" alt="Three people in life jackets stand on a pontoon in a river beside an open equipment case; one holds up a bag of filters while the other two listen." loading="lazy" decoding="async"><figcaption><span class="where">Klamath River</span> The autonomous eDNA sampler pumps and filters water continuously, collecting and preserving genetic material shed by fish and other aquatic organisms for later analysis. Graduate student Laura Redfield (left) teaches undergraduates Joey Salazar (center) and Heleen Mittry (right) the sampler&#x27;s weekly filter change, June 2026. <span class="credit">Photo: Kinziger Lab</span></figcaption></figure><p>Four dams came off the Klamath River in 2024. An automated sampler near the former Iron Gate Dam site has collected and preserved water every day for more than a year. We run qPCR and metabarcoding on those samples to follow Chinook salmon, coho salmon and steelhead as they move into habitat that was closed to them for more than a century.</p>
+<p>Earlier Klamath projects tested whether eDNA can track the number of Chinook smolts leaving the river, and measured how unevenly eDNA from salmon and from the parasite <i>Ceratonova shasta</i> is spread across a large river channel. We are also developing methods that may one day tell spring-run from fall-run Chinook in a water sample.</p>
+<p>In the estuary, a project with José Marin Jarrin&#x27;s lab pairs eDNA metabarcoding with conventional sampling to detect aquatic invasive species early.</p><p class="refs">Read more: <a href="https://now.humboldt.edu/magazine/fall2026/klamath-river-restoration.html" rel="noopener">A River in Recovery, Humboldt magazine, fall 2026</a>, <a href="https://digitalcommons.humboldt.edu/etd/494" rel="noopener">Coyne 2021 (thesis)</a>, <a href="https://digitalcommons.humboldt.edu/etd/641" rel="noopener">Keel 2023 (thesis)</a></p></div></article><article class="topic"><h3>Coho salmon in small streams</h3><div class="topic-body"><p>Coho salmon are protected in California, and surveys for them are usually done by snorkeling. In the Smith River basin, eDNA and snorkel surveys agreed on whether coho were present in 93% of pools. A four-year project for Caltrans measured how quickly fish eDNA is shed and breaks down, and released DNA tracers into streams to learn how far a signal travels before it fades.</p><p class="refs">Read more: <a href="https://doi.org/10.1002/nafm.10993" rel="noopener">Shaffer et al. 2024</a>, <a href="https://digitalcommons.humboldt.edu/etd/727" rel="noopener">Bandy 2024 (thesis)</a>, <a href="https://rosap.ntl.bts.gov/view/dot/74442" rel="noopener">Caltrans final report, 2023</a></p></div></article><article class="topic"><h3>Whole fish communities from a bottle of water</h3><div class="topic-body"><p>Metabarcoding copies a short stretch of the 12S gene from every fish in a sample and sequences them together. Water collected at one Humboldt Bay site every two weeks for a year held DNA from 97 fish species. That is more than any of four conventional surveys of the bay recorded, and 35 of the species had not turned up in those surveys at all.</p>
+<p>A companion project, part of Tribal Fisheries Resilience at Cal Poly Humboldt, sampled twelve marine and estuary sites along 168 km of the North Coast every month for a year. To keep identifications reliable, we are sequencing reference DNA from northern California fishes.</p>
+<p>Farther out, we sample by depth on survey cruises in the Humboldt Wind Energy Area to build a baseline of the fish community there.</p><p class="refs">Read more: <a href="https://digitalcommons.humboldt.edu/etd/2533" rel="noopener">Richardson 2025 (thesis)</a>, <a href="https://www.humboldt.edu/tribal-fisheries-resilience/edna" rel="noopener">Tribal Fisheries Resilience eDNA project</a></p></div></article><article class="topic"><h3>Making eDNA dependable in the field</h3><div class="topic-body"><p>A method is only useful if a field crew can run it the same way every time. We test the practical details: how many samples to take, which filter to use, and how long a sample survives before it reaches the lab. Self-preserving filters, for example, kept goby DNA detectable for more than two weeks at 33 °C but lost it quickly at 43 °C.</p><p class="refs">Read more: <a href="https://digitalcommons.humboldt.edu/etd/2554" rel="noopener">Boche 2026 (thesis)</a>, <a href="https://digitalcommons.humboldt.edu/etd/641" rel="noopener">Keel 2023 (thesis)</a>, <a href="https://digitalcommons.humboldt.edu/etd/727" rel="noopener">Bandy 2024 (thesis)</a></p></div></article>
+
+    <div class="part part--gen" id="genetics">
+      <h2>Conservation genetics and genomics</h2>
+      <p class="lede">Genetic data show what a field survey cannot: which populations are isolated, which are mixing, where an introduced fish came from, and which genes underlie the traits that managers care about.</p>
+    </div>
+    <article class="topic"><h3>The genes behind run timing and life history</h3><div class="topic-body"><p>Whether a Chinook salmon returns to the river in spring or fall comes down to one small region of its genome. That result, published in <i>Science</i> in 2020, matters for restoring spring-run fish to the upper Klamath. Pacific lamprey in the Klamath also come in two forms, one that matures in the ocean and one that matures in the river, and they differ at several interacting genes.</p><p class="refs">Read more: <a href="https://doi.org/10.1126/science.aba9059" rel="noopener">Thompson et al. 2020</a>, <a href="https://doi.org/10.1111/mec.15136" rel="noopener">Parker et al. 2019</a>, <a href="https://doi.org/10.1111/mec.15605" rel="noopener">Hess et al. 2020</a></p></div></article><article class="topic"><h3>Small and isolated populations</h3><div class="topic-body"><p>Sandbars, and more recently dikes and tide gates, cut tidewater goby populations off from one another. In Humboldt Bay&#x27;s fragmented sloughs we found strong genetic drift. Across northern California, populations stayed genetically stable through time, with no sign of the extinction and recolonization cycles seen farther south. Populations with low genetic diversity and a narrow range of ages were the ones most likely to disappear. A reference genome for the northern tidewater goby now supports the next round of work.</p><p class="refs">Read more: <a href="https://doi.org/10.1111/j.1365-294X.2010.04755.x" rel="noopener">McCraney et al. 2010</a>, <a href="https://doi.org/10.1111/mec.13424" rel="noopener">Kinziger et al. 2015</a>, <a href="https://doi.org/10.1371/journal.pone.0113139" rel="noopener">Hellmair and Kinziger 2014</a>, <a href="https://doi.org/10.1093/jhered/esae053" rel="noopener">Jacobs et al. 2024</a></p></div></article><article class="topic"><h3>Hidden diversity and reference genomes</h3><div class="topic-body"><figure class="fig"><img src="img/pit-sculpin-2008.jpg" width="1400" height="933" alt="Close view of a mottled brown sculpin in a photo tank, showing its broad head and fan-shaped pectoral fin." loading="lazy" decoding="async"><figcaption>Pit sculpin (<i>Cottus pitensis</i>) from Bear Creek, photographed on a collecting trip to the Pit River in August 2008. <span class="credit">Photo: Kinziger Lab</span></figcaption></figure><p>Speckled dace in the Klamath and Trinity rivers look alike but belong to distinct genetic lineages. Rough sculpin above and below Pit River Falls, a barrier created by the Hat Creek fault, have diverged genetically. We contribute to reference genomes for California fishes, including speckled dace and tidewater goby. Earlier work described new species of sculpin and sorted out relationships among North American <i>Cottus</i>.</p><p class="refs">Read more: <a href="https://doi.org/10.1007/s10592-017-1027-6" rel="noopener">Wiesenfeld et al. 2017</a>, <a href="https://doi.org/10.1007/s10592-016-0859-9" rel="noopener">Kinziger et al. 2016</a>, <a href="https://doi.org/10.1093/jhered/esag041" rel="noopener">Baker et al. 2026</a>, <a href="http://www.mapress.com/zootaxa/2010/f/z02340p064f.pdf" rel="noopener">Kinziger and Wood 2010</a></p></div></article><article class="topic"><h3>Hatcheries, stocks and hybrids</h3><div class="topic-body"><p>Genetic pedigrees of Mad River Hatchery steelhead let us reconstruct things tags cannot, such as family sizes and the ages at which fish return. Related work documented hybridization between spring-run and fall-run Chinook at Trinity River Hatchery, mapped the population structure of Klamath basin Chinook, and found that coastal cutthroat trout and steelhead hybridize only to a limited degree.</p><p class="refs">Read more: <a href="https://doi.org/10.1002/nafm.10821" rel="noopener">Kinziger, Fong and Garza 2022</a>, <a href="https://doi.org/10.1577/M07-103.1" rel="noopener">Kinziger et al. 2008</a>, <a href="https://doi.org/10.1080/00028487.2013.806351" rel="noopener">Kinziger et al. 2013</a>, <a href="https://doi.org/10.1093/jhered/esad022" rel="noopener">Rizza et al. 2023</a></p></div></article><article class="topic"><h3>Where introduced fishes came from</h3><div class="topic-body"><p>With the U.S. Forest Service Redwood Sciences Laboratory, we trace introduced fishes back to their sources and estimate how many founders it took. Sacramento pikeminnow in the Eel River, Klamath smallscale sucker in the Smith River and introduced speckled dace all tell the same story: a few fish from a nearby basin are enough to start a population.</p><p class="refs">Read more: <a href="https://doi.org/10.1007/s10592-013-0516-5" rel="noopener">Pikeminnow, 2013</a>, <a href="https://doi.org/10.1111/jfb.14664" rel="noopener">Smallscale sucker, 2021</a>, <a href="https://doi.org/10.1007/s10592-024-01651-5" rel="noopener">Smallscale sucker, 2024</a>, <a href="https://doi.org/10.1002/ece3.8" rel="noopener">Speckled dace, 2011</a>, <a href="https://doi.org/10.1007/s10641-019-00870-x" rel="noopener">California roach, 2019</a></p></div></article>
+
+    <div class="part part--plain" id="partners">
+      <h2>Working with us</h2>
+    </div>
+    <article class="topic">
+      <h3>For agencies, Tribes and organizations</h3>
+      <div class="topic-body">
+        <p>We run eDNA and genetic samples for agencies, Tribes and conservation organizations. We can help design the sampling, supply field kits and training, run qPCR or metabarcoding, and help interpret the results.</p>
+<p>The lab has also supported wildlife studies on campus, from genetic mark and recapture of black bears to DNA barcoding for wildlife disease.</p>
+        <p><a class="link-strong" href="#contact">Contact the lab</a></p>
+      </div>
+    </article>
+    <article class="topic">
+      <h3>Partners and funders</h3>
+      <div class="topic-body">
+        <ul class="plain-list"><li>Hoopa Valley Tribe</li><li>Yurok Tribe</li><li>U.S. Fish and Wildlife Service</li><li>NOAA Fisheries, Southwest Fisheries Science Center</li><li>U.S. Forest Service, Redwood Sciences Laboratory</li><li>California Department of Fish and Wildlife</li><li>California Department of Transportation (Caltrans)</li><li>California Cooperative Fish and Wildlife Research Unit</li><li>Columbia River Inter-Tribal Fish Commission</li><li>California Conservation Genomics Project</li><li>CSU Council on Ocean Affairs, Science and Technology (COAST)</li><li>California Trout (CalTrout)</li><li>Stillwater Sciences</li><li>FISHBIO</li></ul>
+        
+      </div>
+    </article>
+    <article class="topic">
+      <h3>In the lab</h3>
+      <div class="topic-body"><ul class="plain-list"><li>Quantitative PCR (QuantStudio 3) and droplet digital PCR</li><li>eDNA metabarcoding with MiFish 12S primers</li><li>SNP and microsatellite genotyping, Sanger sequencing</li><li>Occupancy and population-genetic modeling in R</li></ul></div>
+    </article>
+  </div>
+</section>
+
+<section class="view" id="people" data-view="people" aria-label="People">
+  <div class="wrap">
+    <div class="page-head">
+      <h1>People</h1>
+      <p class="lede">A principal investigator, graduate students in the Natural Resources M.S. program, and undergraduates who learn the lab from the bench up.</p>
+      
+    </div>
+
+    <div class="band pi">
+      <figure class="portrait"><img src="img/andrew-kinziger.jpg" width="640" height="800" alt="Andrew Kinziger" loading="lazy" decoding="async"><figcaption>Photo: Kellie Jo Brown, Cal Poly Humboldt</figcaption></figure>
+      <div>
+        <h2>Andrew P. Kinziger, Ph.D.</h2>
+        <ul class="roles"><li>Professor and Chair, Department of Fisheries Biology</li><li>Graduate Coordinator, Natural Resources M.S. program</li></ul>
+        <div class="prose"><p>Andrew has taught at Humboldt and mentored M.S. students since 2003. He uses genetic data to study the ecology, management and conservation of fishes, and much of his recent work is on environmental DNA. He co-edited the 2025 <i>Molecular Ecology Resources</i> special issue on Indigenous contributions to molecular ecology.</p>
+<p>Away from the lab he runs, hikes, surfs and plays basketball, and spends time outdoors in Humboldt County with his family.</p></div>
+        <div class="facts">
+          <div><h3>Education</h3><dl><dt>Ph.D.</dt><dd>Ecology, Evolution and Systematics, Saint Louis University, 2003</dd><dt>M.S.</dt><dd>Applied Ecology and Conservation Biology, Frostburg State University, 1998</dd><dt>B.S.</dt><dd>Environmental Science, St. Norbert College, 1996</dd></dl></div>
+          <div><h3>Courses</h3><ul><li>FISH 474 Conservation Genetics of Fish and Wildlife</li><li>Earlier: Ichthyology; Techniques in Fisheries Biology</li></ul></div>
+          <div><h3>Contact</h3><ul><li><a href="mailto:andrew.kinziger@humboldt.edu">andrew.kinziger@humboldt.edu</a></li><li>(707) 826-3944</li><li>Office: Wildlife and Fisheries 210</li><li>Lab: Wildlife and Fisheries 214</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Current members</h2></div>
+      <div>
+        
+        <ul class="roster"><li class=""><span class="mono" aria-hidden="true">AB</span><span><span class="name">Alec Bauer</span><span class="role">Graduate student, Natural Resources M.S.</span></span><span class="proj">eDNA metabarcoding to monitor fish diversity in northern California</span></li><li class=""><span class="mono" aria-hidden="true">OG</span><span><span class="name">Olivia Giovannetti</span><span class="role">Graduate student, Natural Resources M.S.</span></span><span class="proj">eDNA metabarcoding of fishes in the Humboldt Wind Energy Area, with the COAST offshore surveys</span></li><li class=""><span class="mono" aria-hidden="true">LR</span><span><span class="name">Laura Redfield</span><span class="role">Graduate student, Natural Resources M.S.</span></span><span class="proj">Klamath River eDNA: informing sonar estimates of salmon abundance</span></li><li class=""><span class="mono" aria-hidden="true">HM</span><span><span class="name">Heleen Mittry</span><span class="role">Undergraduate researcher, Fisheries Biology</span></span><span class="proj">Klamath River eDNA: field sampling</span></li></ul>
+      </div>
+    </div>
+
+    <div class="band" id="alumni">
+      <div class="band-head"><h2>Lab alumni</h2>
+        <p>22 M.S. graduates, newest first.</p>
+        <p class="legend"><span class="dot dot--edna" aria-hidden="true"></span>eDNA thesis<br><span class="dot dot--gen" aria-hidden="true"></span>Genetics thesis</p>
+      </div>
+      <div>
+        
+        <ul class="alumni">
+          <li class="alumni-head" aria-hidden="true"><span>Year</span><span>Graduate</span><span>Thesis</span><span>After the lab</span></li>
+          <li><span class="yr">2026</span><span class="name">Megan Boche</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/2554" rel="noopener">The effects of temperature on the persistence of environmental DNA in self-preserving filters</a></span><span class="after"></span></li><li><span class="yr">2025</span><span class="name">Johnathon M. Richardson</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/2533" rel="noopener">Using environmental DNA metabarcoding to investigate diversity and seasonal variation of fishes in Humboldt Bay, California</a></span><span class="after">Post-Masters Research Associate, Waterpower Science and Ecology, Pacific Northwest National Laboratory</span></li><li><span class="yr">2024</span><span class="name">Jacqueline M. Bridegum</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/735" rel="noopener">Using environmental DNA methods for estimating juvenile Chinook salmon abundance</a></span><span class="after">Fish Biologist, U.S. Fish and Wildlife Service, Arcata</span></li><li><span class="yr">2024</span><span class="name">Gavin B. Bandy</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/727" rel="noopener">Evaluating the utility of tracers to characterize environmental DNA transport and inform detection of fishes in small streams</a></span><span class="after">Fisheries Biologist, Thomas Gast &amp; Associates Environmental Consultants, Arcata</span></li><li><span class="yr">2023</span><span class="name">Dylan J. Keel</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/641" rel="noopener">Effects of depth, distance to shore, and water velocity on organismal and extra-organismal environmental DNA concentrations in a large river</a></span><span class="after">Ecologist, Resource Environmental Solutions</span></li><li><span class="yr">2021</span><span class="name">Doyle J. Coyne</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/494" rel="noopener">Comparison of standard and environmental DNA methods for estimating Chinook salmon smolt abundance in the Klamath River, California</a></span><span class="after">California Department of Fish and Wildlife</span></li><li><span class="yr">2020</span><span class="name">Steven R. Fong</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/403" rel="noopener">Spatial and temporal genetic structure of winter-run steelhead (<i>Oncorhynchus mykiss</i>) returning to the Mad River, California</a></span><span class="after">Ph.D. program, Michigan State University</span></li><li><span class="yr">2019</span><span class="name">Chad M. Martel</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/323" rel="noopener">Using environmental DNA and occupancy modeling to estimate rangewide metapopulation dynamics of the endangered tidewater goby <i>Eucyclogobius</i> spp.</a></span><span class="after">Hoopa Valley Tribal Fisheries</span></li><li><span class="yr">2018</span><span class="name">Keith A. Parker</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/179" rel="noopener">Evidence for the genetic basis and inheritance of ocean and river-maturing ecotypes of Pacific lamprey (<i>Entosphenus tridentatus</i>) in the Klamath River, California</a></span><span class="after">Senior Fisheries Biologist, Yurok Tribe; teaches at Cal Poly Humboldt</span></li><li><span class="yr">2018</span><span class="name">Michael Sutter</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/125" rel="noopener">Rangewide tidewater goby occupancy survey using environmental DNA</a></span><span class="after"></span></li><li><span class="yr">2016</span><span class="name">Ryan W. Whitmore</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/5" rel="noopener">Evaluation of parameter estimation and field application of transgenerational genetic mark-recapture</a></span><span class="after">Coho biologist, northern and central British Columbia</span></li><li><span class="yr">2016</span><span class="name">Kevin D. Hinterman</span><span class="thesis"><span class="dot" aria-hidden="true"></span><a href="https://digitalcommons.humboldt.edu/etd/6" rel="noopener">Baseline monitoring and characterization of rocky intertidal fish communities in Northern California</a></span><span class="after">Animal Care Coordinator and Research Technician in Ichthyology, Moss Landing Marine Laboratories</span></li><li><span class="yr">2015</span><span class="name">Molly C. Schmelzle</span><span class="thesis"><span class="dot dot--edna" aria-hidden="true"></span><span class="sr">eDNA thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1579" rel="noopener">Using occupancy modeling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species</a></span><span class="after"></span></li><li><span class="yr">2015</span><span class="name">Conrad B. Newell</span><span class="thesis"><span class="dot" aria-hidden="true"></span><a href="https://digitalcommons.humboldt.edu/etd/1575" rel="noopener">Spawning behavior induction, thermal tolerance and anisakid parasites of the federally endangered tidewater goby (<i>Eucyclogobius newberryi</i>)</a></span><span class="after">Research biologist, Seattle Shellfish</span></li><li><span class="yr">2014</span><span class="name">Jesse C. Wiesenfeld</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1580" rel="noopener">Riverscape genetics identifies a cryptic lineage of speckled dace (<i>Rhinichthys osculus</i>) in the Klamath-Trinity Basin</a></span><span class="after">Fisheries consulting, Sacramento</span></li><li><span class="yr">2011</span><span class="name">James W. Hearsey</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1576" rel="noopener">Run timing, fat content and maturity of spring- and fall-run Klamath River Chinook salmon (<i>Oncorhynchus tshawytscha</i>)</a></span><span class="after">Fisheries Biologist, NOAA, Seattle</span></li><li><span class="yr">2011</span><span class="name">Melissa R. Reneski</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1574" rel="noopener">Temporal genetic analysis of steelhead (<i>Oncorhynchus mykiss</i>) reveals hatchery-induced drift in captivity</a></span><span class="after">California Department of Fish and Wildlife</span></li><li><span class="yr">2011</span><span class="name">Michael Hellmair</span><span class="thesis"><span class="dot" aria-hidden="true"></span><a href="https://digitalcommons.humboldt.edu/etd/1577" rel="noopener">Life history variation and diet of the endangered tidewater goby, <i>Eucyclogobius newberryi</i></a></span><span class="after">Fish biologist, Lake Constance, Austria</span></li><li><span class="yr">2009</span><span class="name">W. Tyler McCraney</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1578" rel="noopener">Rampant drift in the endangered tidewater goby (<i>Eucyclogobius newberryi</i>): comparing genetic variation of naturally and artificially fragmented populations</a></span><span class="after">Fisheries Geneticist, Northwest Indian Fisheries Commission; earlier Ph.D., UCLA, and postdoctoral researcher in the lab, 2020–2024</span></li><li><span class="yr">2007</span><span class="name">David M. Malakauskas</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1581" rel="noopener">Microsatellite evidence for short-term stability in a hybrid zone between spring-run and fall-run Chinook salmon</a></span><span class="after"></span></li><li><span class="yr">2006</span><span class="name">Damon H. Goodman</span><span class="thesis"><span class="dot dot--gen" aria-hidden="true"></span><span class="sr">Genetics thesis: </span><a href="https://digitalcommons.humboldt.edu/etd/1877" rel="noopener">Evidence for high levels of gene flow among populations of a widely distributed anadromous lamprey <i>Entosphenus tridentatus</i> (Petromyzontidae)</a></span><span class="after">Regional Director, California Trout</span></li><li><span class="yr">2006</span><span class="name">Katie R. McGourty</span><span class="thesis"><span class="dot" aria-hidden="true"></span><a href="https://digitalcommons.humboldt.edu/etd/1582" rel="noopener">Spawning time, fecundity, habitat utilization, and parasites of <i>Eucyclogobius newberryi</i> in Humboldt County, Big Lagoon, CA</a></span><span class="after"></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="publications" data-view="publications" aria-label="Publications">
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Publications</h1>
+      <p class="lede">54 papers since 1997. <span class="alum">Underlined</span> names are students and alumni of the lab.</p>
+      
+    </div>
+
+    <div class="pub-tools">
+      <div class="chips" role="group" aria-label="Filter by theme">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All<span class="n">54</span></button>
+<button type="button" class="chip" data-filter="edna" aria-pressed="false">eDNA<span class="n">5</span></button>
+<button type="button" class="chip" data-filter="cons" aria-pressed="false">Conservation genetics<span class="n">13</span></button>
+<button type="button" class="chip" data-filter="genomics" aria-pressed="false">Genomics and adaptation<span class="n">5</span></button>
+<button type="button" class="chip" data-filter="invasion" aria-pressed="false">Invasion genetics<span class="n">5</span></button>
+<button type="button" class="chip" data-filter="syst" aria-pressed="false">Systematics<span class="n">11</span></button>
+<button type="button" class="chip" data-filter="ecol" aria-pressed="false">Ecology and natural history<span class="n">13</span></button>
+<button type="button" class="chip" data-filter="editorial" aria-pressed="false">Editorials<span class="n">2</span></button>
+      </div>
+      <label class="pub-search" for="pubq">Search <input id="pubq" type="search" placeholder="goby, lamprey, Klamath" autocomplete="off"></label>
+    </div>
+    <p class="pub-count" id="pubcount" aria-live="polite">Showing all 54 papers</p>
+    <p class="pub-empty" id="pubempty" hidden>No papers match. Clear the search or choose All.</p>
+    <ol class="pubs" id="publist">
+      <li class="pub first-of-year" data-theme="genomics" data-year="2026"><span class="pub-year">2026</span><div class="pub-body"><p class="pub-title">A genome assembly of the speckled dace, <i>Rhinichthys osculus</i></p><p class="pub-cite"><span class="pub-authors">Henry K Baker, Merly Escalona, <strong>Andrew P Kinziger</strong>, Jeff Rodzen, Steve Parmenter, Mohan P A Marimuthu, Oanh Nguyen, Noravit Chumchim, Eric Beraut, Samuel Sacco, William Seligmann, Colin W Fairbairn, Robert D Cooper, Courtney Miller, Erin Toffelmier, J Carlos Garza, H Bradley Shaffer, Jonathan B Shurin, Diana J Rennison.</span> 2026. <i>Journal of Heredity</i> esag041.</p><p class="pub-meta"><span class="tag tag--gen">Genomics and adaptation</span> <a href="https://doi.org/10.1093/jhered/esag041" rel="noopener">doi:10.1093/jhered/esag041</a></p></div></li>
+<li class="pub first-of-year" data-theme="editorial" data-year="2025"><span class="pub-year">2025</span><div class="pub-body"><p class="pub-title">Hīkina te mānuka: Advancing Indigenous Leadership in Molecular Ecology</p><p class="pub-cite"><span class="pub-authors">Ramos, S. C., <strong>Kinziger, A.P.</strong>, A. Alexander.</span> 2025. <i>Molecular Ecology Resources</i> 25(2):e14049.</p><p class="pub-meta"><span class="tag tag--plain">Editorials</span> <a href="https://doi.org/10.1111/1755-0998.14049" rel="noopener">doi:10.1111/1755-0998.14049</a></p></div></li>
+<li class="pub first-of-year" data-theme="invasion" data-year="2024"><span class="pub-year">2024</span><div class="pub-body"><p class="pub-title">Contemporary evolution of neutral genetic structure in introduced Klamath smallscale suckers (<i>Catostomus rimiculus</i>) recapitulates native patterns</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A. P.</strong>, <span class="alum">Fong</span>, S. R., Nakamoto, R. J., White, J. L., &amp; Harvey, B. C.</span> 2024. <i>Conservation Genetics</i>.</p><p class="pub-meta"><span class="tag tag--gen">Invasion genetics</span> <a href="https://doi.org/10.1007/s10592-024-01651-5" rel="noopener">doi:10.1007/s10592-024-01651-5</a> <a href="https://rdcu.be/dXj7S" rel="noopener">Read free</a></p></div></li>
+<li class="pub" data-theme="genomics" data-year="2024"><span class="pub-year">2024</span><div class="pub-body"><p class="pub-title">Reference genome for the endangered, genetically subdivided, northern tidewater goby, <i>Eucyclogobius newberryi</i></p><p class="pub-cite"><span class="pub-authors">David K Jacobs, <strong>Andrew Kinziger</strong>, Mira Abrecht, W Tyler <span class="alum">McCraney</span>, Benjamin A Hà, Brenton T Spies, Elizabeth Heath-Heckman, Mohan P A Marimuthu, Oanh Nguyen, Colin W Fairbairn, William E Seligmann, Merly Escalona, Courtney Miller, H Bradley Shaffer.</span> 2024. <i>Journal of Heredity</i> esae053.</p><p class="pub-meta"><span class="tag tag--gen">Genomics and adaptation</span> <a href="https://doi.org/10.1093/jhered/esae053" rel="noopener">doi:10.1093/jhered/esae053</a></p></div></li>
+<li class="pub" data-theme="edna" data-year="2024"><span class="pub-year">2024</span><div class="pub-body"><p class="pub-title">Comparison of environmental DNA and underwater visual count surveys for detecting juvenile Coho Salmon in small rivers</p><p class="pub-cite"><span class="pub-authors">Shaffer, J. T., <strong>Kinziger, A. P.</strong>, Bjorkstedt, E. P., &amp; Buchheister, A.</span> 2024. <i>North American Journal of Fisheries Management</i>.</p><p class="pub-meta"><span class="tag tag--edna">eDNA</span> <a href="https://doi.org/10.1002/nafm.10993" rel="noopener">doi:10.1002/nafm.10993</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2024"><span class="pub-year">2024</span><div class="pub-body"><p class="pub-title">Age and growth of larval Pacific flagfin mojarra (<i>Eucinostomus currani</i>) in coastal Ecuador based on otolith analysis</p><p class="pub-cite"><span class="pub-authors">Schuiteman, M., Dos Santos, A. R., Domínguez-Granda, L. E., <strong>Kinziger, A.</strong>, &amp; Marin Jarrin, J. R.</span> 2024. <i>Ciencias Marinas</i> 50.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://doi.org/10.7773/cm.y2024.3448" rel="noopener">doi:10.7773/cm.y2024.3448</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2023"><span class="pub-year">2023</span><div class="pub-body"><p class="pub-title">Limited, asymmetric hybridization between coastal cutthroat trout and steelhead in a Northern California river</p><p class="pub-cite"><span class="pub-authors">Rizza, S.F., M.A. Wilzbach, <strong>A.P. Kinziger</strong>, E.C. Anderson, and J.C. Garza.</span> 2023. <i>Journal of Heredity</i> 114:219–230.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1093/jhered/esad022" rel="noopener">doi:10.1093/jhered/esad022</a></p></div></li>
+<li class="pub first-of-year" data-theme="ecol" data-year="2022"><span class="pub-year">2022</span><div class="pub-body"><p class="pub-title"><i>Knemidokoptes</i> mites and their effects on the gripping position of Steller&#x27;s Jay (<i>Cyanocitta stelleri</i>) feet</p><p class="pub-cite"><span class="pub-authors">Burris, W.M., <strong>A.P. Kinziger</strong>, J.M. Black, and R.N. Brown.</span> 2022. <i>Journal of Wildlife Diseases</i> 58(4):859–868.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://doi.org/10.7589/JWD-D-22-00016" rel="noopener">doi:10.7589/JWD-D-22-00016</a></p></div></li>
+<li class="pub" data-theme="cons" data-year="2022"><span class="pub-year">2022</span><div class="pub-body"><p class="pub-title">Pedigree analysis of an integrated hatchery steelhead program from the Mad River, California provides insight into life-history patterns and informs management</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, S.R. <span class="alum">Fong</span>, J.C. Garza.</span> 2022. <i>North American Journal of Fisheries Management</i> 42:1285–1295.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1002/nafm.10821" rel="noopener">doi:10.1002/nafm.10821</a></p></div></li>
+<li class="pub first-of-year" data-theme="edna" data-year="2021"><span class="pub-year">2021</span><div class="pub-body"><p class="pub-title">Using environmental DNA and occupancy modelling to estimate rangewide metapopulation dynamics</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Martel</span> C, <span class="alum">Sutter</span> M, Dorazio R, <strong>Kinziger AP</strong>.</span> 2021. <i>Molecular Ecology</i> 30:3340–3354.</p><p class="pub-meta"><span class="tag tag--edna">eDNA</span> <a href="https://doi.org/10.1111/mec.15693" rel="noopener">doi:10.1111/mec.15693</a> <span class="press">In the news: <a href="https://dot.ca.gov/-/media/dot-media/programs/research-innovation-system-information/documents/drisi-caltrans-solution-lab-v33-a11y.pdf" rel="noopener">Caltrans: eDNA Speeds Up Road Maintenance, p. 11</a></span></p></div></li>
+<li class="pub" data-theme="edna" data-year="2021"><span class="pub-year">2021</span><div class="pub-body"><p class="pub-title">Biodiversity monitoring using environmental DNA</p><p class="pub-cite"><span class="pub-authors">Rodríguez-Ezpeleta, N., L. Zinger, <strong>A.P. Kinziger</strong>, H.M. Bik, A. Bonin, E. Coissac, B.C Emerson, C. Martins Lopes, T.A. Pelletier, P Taberlet, S. Narum.</span> 2021. <i>Molecular Ecology Resources</i> 21:1405–1409.</p><p class="pub-meta"><span class="tag tag--edna">eDNA</span> <a href="https://doi.org/10.1111/1755-0998.13399" rel="noopener">doi:10.1111/1755-0998.13399</a></p></div></li>
+<li class="pub" data-theme="invasion" data-year="2021"><span class="pub-year">2021</span><div class="pub-body"><p class="pub-title">Recent, small beginnings: genetic analysis suggests <i>Catostomus rimiculus</i> (Klamath smallscale sucker) in the Smith River, California, are introduced</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, White, J.L., Nakamoto, R.J., and B.C. Harvey.</span> 2021. <i>Journal of Fish Biology</i> 98:1321–1328.</p><p class="pub-meta"><span class="tag tag--gen">Invasion genetics</span> <a href="https://doi.org/10.1111/jfb.14664" rel="noopener">doi:10.1111/jfb.14664</a></p></div></li>
+<li class="pub first-of-year" data-theme="editorial" data-year="2020"><span class="pub-year">2020</span><div class="pub-body"><p class="pub-title">Sharing and reporting benefits from biodiversity research</p><p class="pub-cite"><span class="pub-authors">Marden, E., R.J. Abbott, F. Austerlitz, D. Ortiz‐Barrientos, R. S. Baucom, P. Bongaerts … <strong>A.P. Kinziger</strong> … L.H. Rieseberg.</span> 2020. <i>Molecular Ecology</i> 30:1103–1107.</p><p class="pub-meta"><span class="tag tag--plain">Editorials</span> <a href="https://doi.org/10.1111/mec.15702" rel="noopener">doi:10.1111/mec.15702</a></p></div></li>
+<li class="pub" data-theme="genomics" data-year="2020"><span class="pub-year">2020</span><div class="pub-body"><p class="pub-title">A complex phenotype in salmon controlled by a simple change in migratory timing</p><p class="pub-cite"><span class="pub-authors">Thompson, N.F., E.C. Anderson, A.J. Clemento, M.A Campbell, D.E. Pearse, J.W. <span class="alum">Hearsey</span>, <strong>A.P. Kinziger</strong>, and J.C. Garza.</span> 2020. <i>Science</i> 370(6516):609–613.</p><p class="pub-meta"><span class="tag tag--gen">Genomics and adaptation</span> <a href="https://doi.org/10.1126/science.aba9059" rel="noopener">doi:10.1126/science.aba9059</a> <span class="press">In the news: <a href="https://science.sciencemag.org/content/370/6516/526" rel="noopener">Science Perspective</a>, <a href="https://www.nationalgeographic.com/environment/2020/11/dam-removal-project-genetic-discovery-could-be-good-news-for-key-salmon-species/" rel="noopener">National Geographic</a>, <a href="https://www.eurekalert.org/news-releases/482684" rel="noopener">UC Santa Cruz</a>, <a href="http://now.humboldt.edu/news/a-tiny-difference-in-genetics-is-good-news-for-salmon-conservation/" rel="noopener">Humboldt Now</a>, <a href="https://www.sciencedirect.com/science/article/pii/S0092867420317591" rel="noopener">Cell</a></span></p></div></li>
+<li class="pub" data-theme="genomics" data-year="2020"><span class="pub-year">2020</span><div class="pub-body"><p class="pub-title">Genomic islands of divergence infer a phenotypic landscape in Pacific lamprey</p><p class="pub-cite"><span class="pub-authors">Hess, J., J. Smith, N. Timoshevskaya, C. Baker, C. Caudill, D. Graves, M. Keefer, <strong>A. Kinziger</strong>, M. Moser, L. Porter, G. Silver, S. Whitlock, and S. Narum.</span> 2020. <i>Molecular Ecology</i> 29:3841–3856.</p><p class="pub-meta"><span class="tag tag--gen">Genomics and adaptation</span> <a href="https://doi.org/10.1111/mec.15605" rel="noopener">doi:10.1111/mec.15605</a></p></div></li>
+<li class="pub first-of-year" data-theme="genomics" data-year="2019"><span class="pub-year">2019</span><div class="pub-body"><p class="pub-title">Evidence for the genetic basis and epistatic interactions underlying ocean‐ and river‐maturing ecotypes of Pacific lamprey (<i>Entosphenus tridentatus</i>) returning to the Klamath River, California</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Parker</span> KA, Hess JE, Narum SR, <strong>Kinziger AP</strong>.</span> 2019. <i>Molecular Ecology</i> 28:3171–3185.</p><p class="pub-meta"><span class="tag tag--gen">Genomics and adaptation</span> <a href="https://doi.org/10.1111/mec.15136" rel="noopener">doi:10.1111/mec.15136</a></p></div></li>
+<li class="pub" data-theme="invasion" data-year="2019"><span class="pub-year">2019</span><div class="pub-body"><p class="pub-title">California roach (<i>Hesperoleucus symmetricus</i>) in the Eel River of northwestern California: native or introduced?</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, R.J. Nakamoto, A. Aguilar, B.C. Harvey.</span> 2019. <i>Environmental Biology of Fishes</i> 102:771–781.</p><p class="pub-meta"><span class="tag tag--gen">Invasion genetics</span> <a href="https://doi.org/10.1007/s10641-019-00870-x" rel="noopener">doi:10.1007/s10641-019-00870-x</a></p></div></li>
+<li class="pub" data-theme="edna" data-year="2019"><span class="pub-year">2019</span><div class="pub-body"><p class="pub-title">Rangewide tidewater goby occupancy survey using environmental DNA</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Sutter</span>, M., and <strong>A.P. Kinziger</strong>.</span> 2019. <i>Conservation Genetics</i> 20:597–613.</p><p class="pub-meta"><span class="tag tag--edna">eDNA</span> <a href="https://doi.org/10.1007/s10592-019-01161-9" rel="noopener">doi:10.1007/s10592-019-01161-9</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2017"><span class="pub-year">2017</span><div class="pub-body"><p class="pub-title">Riverscape genetics identifies speckled dace (<i>Rhinichthys osculus</i>) cryptic diversity in the Klamath-Trinity Basin</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Wiesenfeld</span>, J.C., D.H. <span class="alum">Goodman</span>, and <strong>A.P. Kinziger</strong>.</span> 2017. <i>Conservation Genetics</i> 19:111–127.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1007/s10592-017-1027-6" rel="noopener">doi:10.1007/s10592-017-1027-6</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2016"><span class="pub-year">2016</span><div class="pub-body"><p class="pub-title">Novel concordance between geographic, environmental, and genetic structure in the ecological generalist prickly sculpin (<i>Cottus asper</i>) in California</p><p class="pub-cite"><span class="pub-authors">Baumsteiger, J., <strong>A.P. Kinziger</strong>, A. Aguilar.</span> 2016. <i>Journal of Heredity</i> 107:504–517.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1093/jhered/esw045" rel="noopener">doi:10.1093/jhered/esw045</a></p></div></li>
+<li class="pub" data-theme="cons" data-year="2016"><span class="pub-year">2016</span><div class="pub-body"><p class="pub-title">Genetic diversity and divergence in the fountain darter (<i>Etheostoma fonticola</i>): implications for conservation of an endangered species</p><p class="pub-cite"><span class="pub-authors">Olsen, J.B., <strong>A.P. Kinziger</strong>, J.K. Wenburg, C.J. Lewis, C.T. Phillips, K.G. Ostrand.</span> 2016. <i>Conservation Genetics</i> 17:1393–1404.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1007/s10592-016-0869-7" rel="noopener">doi:10.1007/s10592-016-0869-7</a></p></div></li>
+<li class="pub" data-theme="cons" data-year="2016"><span class="pub-year">2016</span><div class="pub-body"><p class="pub-title">Evolution of rough sculpin (<i>Cottus asperrimus</i>) genetic divergence and late Quaternary displacement on the Hat Creek fault, California, USA</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, M. <span class="alum">Hellmair</span>, S.R. <span class="alum">Fong</span>, D.H. <span class="alum">Goodman</span>, H. Kelsey.</span> 2016. <i>Conservation Genetics</i> 17:1257–1267.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1007/s10592-016-0859-9" rel="noopener">doi:10.1007/s10592-016-0859-9</a></p></div></li>
+<li class="pub" data-theme="edna" data-year="2016"><span class="pub-year">2016</span><div class="pub-body"><p class="pub-title">Using occupancy modeling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Schmelzle</span>, M.C., and <strong>A.P. Kinziger</strong>.</span> 2016. <i>Molecular Ecology Resources</i> 16:895–908.</p><p class="pub-meta"><span class="tag tag--edna">eDNA</span> <a href="https://doi.org/10.1111/1755-0998.12501" rel="noopener">doi:10.1111/1755-0998.12501</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2015"><span class="pub-year">2015</span><div class="pub-body"><p class="pub-title">Temporal genetic analysis of the endangered tidewater goby: extinction–colonization dynamics or drift in isolation?</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, M. <span class="alum">Hellmair</span>, W. T. <span class="alum">McCraney</span>, D.K. Jacobs, G. Goldsmith.</span> 2015. <i>Molecular Ecology</i> 24:5544–5560.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1111/mec.13424" rel="noopener">doi:10.1111/mec.13424</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2015"><span class="pub-year">2015</span><div class="pub-body"><p class="pub-title">First record of striped mullet (<i>Mugil cephalus</i>) in Humboldt Bay, California</p><p class="pub-cite"><span class="pub-authors">Wallace, M., E.W. Ojerholm, A.J. Scheiff, and <strong>A.P. Kinziger</strong>.</span> 2015. <i>California Fish and Game</i> 101(4):286–288.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=113248&amp;inline" rel="noopener">PDF</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2014"><span class="pub-year">2014</span><div class="pub-body"><p class="pub-title">Increased extinction potential of insular fish populations with reduced life history variation and low genetic diversity</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Hellmair</span>, M., and <strong>A.P. Kinziger</strong>.</span> 2014. <i>PLoS ONE</i> 9(11):e113139.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1371/journal.pone.0113139" rel="noopener">doi:10.1371/journal.pone.0113139</a></p></div></li>
+<li class="pub" data-theme="syst" data-year="2014"><span class="pub-year">2014</span><div class="pub-body"><p class="pub-title">Complex phylogeography and historical hybridization between sister taxa of freshwater sculpin (<i>Cottus</i>)</p><p class="pub-cite"><span class="pub-authors">Baumsteiger, J., <strong>A.P. Kinziger</strong>, S.B. Reid, A. Aguilar.</span> 2014. <i>Molecular Ecology</i> 23:2602–2618.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1111/mec.12758" rel="noopener">doi:10.1111/mec.12758</a></p></div></li>
+<li class="pub" data-theme="cons" data-year="2014"><span class="pub-year">2014</span><div class="pub-body"><p class="pub-title">Diversity in sympatric Chinook salmon runs – timing, relative fat content and maturation</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Hearsey</span>, J.W., and <strong>A.P. Kinziger</strong>.</span> 2014. <i>Environmental Biology of Fishes</i> 98:413–423.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1007/s10641-014-0272-5" rel="noopener">doi:10.1007/s10641-014-0272-5</a></p></div></li>
+<li class="pub first-of-year" data-theme="invasion" data-year="2013"><span class="pub-year">2013</span><div class="pub-body"><p class="pub-title">Local-scale invasion pathways and small founder numbers in introduced Sacramento pikeminnow (<i>Ptychocheilus grandis</i>)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A. P.</strong>, R.J. Nakamoto, and B.C. Harvey.</span> 2013. <i>Conservation Genetics</i> 15:1–9.</p><p class="pub-meta"><span class="tag tag--gen">Invasion genetics</span> <a href="https://doi.org/10.1007/s10592-013-0516-5" rel="noopener">doi:10.1007/s10592-013-0516-5</a></p></div></li>
+<li class="pub" data-theme="cons" data-year="2013"><span class="pub-year">2013</span><div class="pub-body"><p class="pub-title">Contemporary population structure in Klamath River basin Chinook salmon revealed by analysis of microsatellite genetic data</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A. P.</strong>, M. <span class="alum">Hellmair</span>, D.G. Hankin, and J.C. Garza.</span> 2013. <i>Transactions of the American Fisheries Society</i> 142:1347–1357.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1080/00028487.2013.806351" rel="noopener">doi:10.1080/00028487.2013.806351</a></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2012"><span class="pub-year">2012</span><div class="pub-body"><p class="pub-title">Life history and biogeographic diversification of an endemic western North American freshwater fish clade using a comparative species tree approach</p><p class="pub-cite"><span class="pub-authors">Baumsteiger, J., <strong>A.P. Kinziger</strong>, and A. Aguilar.</span> 2012. <i>Molecular Phylogenetics and Evolution</i> 65:940–952.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://www.sciencedirect.com/science/article/pii/S1055790312003247" rel="noopener">Article</a></p></div></li>
+<li class="pub first-of-year" data-theme="invasion" data-year="2011"><span class="pub-year">2011</span><div class="pub-body"><p class="pub-title">Small founding number and low genetic diversity in an introduced species exhibiting limited invasion success (speckled dace, <i>Rhinichthys osculus</i>)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A. P.</strong>, R.J. Nakamoto, E.C. Anderson, and B.C. Harvey.</span> 2011. <i>Ecology and Evolution</i> 1:73–84.</p><p class="pub-meta"><span class="tag tag--gen">Invasion genetics</span> <a href="https://doi.org/10.1002/ece3.8" rel="noopener">doi:10.1002/ece3.8</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2011"><span class="pub-year">2011</span><div class="pub-body"><p class="pub-title">Preying on invasives: the exotic New Zealand mudsnail in the diet of the endangered tidewater goby</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Hellmair</span>, M., G. Goldsmith, and <strong>A.P. Kinziger</strong>.</span> 2011. <i>Biological Invasions</i> 13:2197–2201.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://doi.org/10.1007/s10530-011-0054-3" rel="noopener">doi:10.1007/s10530-011-0054-3</a></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2010"><span class="pub-year">2010</span><div class="pub-body"><p class="pub-title">Rampant drift in artificially fragmented populations of the endangered tidewater goby (<i>Eucyclogobius newberryi</i>)</p><p class="pub-cite"><span class="pub-authors"><span class="alum">McCraney</span>, W. T., G. Goldsmith, D.K. Jacobs, and <strong>A.P. Kinziger</strong>.</span> 2010. <i>Molecular Ecology</i> 19:3315–3327.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1111/j.1365-294X.2010.04755.x" rel="noopener">doi:10.1111/j.1365-294X.2010.04755.x</a></p></div></li>
+<li class="pub" data-theme="syst" data-year="2010"><span class="pub-year">2010</span><div class="pub-body"><p class="pub-title"><i>Cottus immaculatus</i>, a new species of sculpin (Cottidae) from the Ozark Highlands of Arkansas and Missouri, USA</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, and R.M. Wood.</span> 2010. <i>Zootaxa</i> 2340:50–64.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="http://www.mapress.com/zootaxa/2010/f/z02340p064f.pdf" rel="noopener">PDF</a></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2009"><span class="pub-year">2009</span><div class="pub-body"><p class="pub-title">Morphological diagnosis of <i>Entosphenus</i> and <i>Lampetra</i> ammocoetes (Petromyzontidae) in Washington, Oregon, and California</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Goodman</span>, D.H., <strong>A.P. Kinziger</strong>, S.B. Reid, and M.F. Docker.</span> 2009. <i>American Fisheries Society Symposium</i> 72:223–232.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span></p></div></li>
+<li class="pub first-of-year" data-theme="cons" data-year="2008"><span class="pub-year">2008</span><div class="pub-body"><p class="pub-title">Hybridization between spring-run and fall-run Chinook salmon returning to the Trinity River Hatchery</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, E. J. Loudenslager, D.G. Hankin, J.C. Garza and E.C. Anderson.</span> 2008. <i>North American Journal of Fisheries Management</i> 28:1426–1438.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1577/M07-103.1" rel="noopener">doi:10.1577/M07-103.1</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2008"><span class="pub-year">2008</span><div class="pub-body"><p class="pub-title">Spawning time, fecundity, habitat utilization, and parasites of a northern California population of tidewater goby, <i>Eucyclogobius newberryi</i></p><p class="pub-cite"><span class="pub-authors"><span class="alum">McGourty</span>, K.M., <strong>A.P. Kinziger</strong>, and G. Goldsmith.</span> 2008. <i>California Fish and Game</i> 94(1):18–32.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub" data-theme="cons" data-year="2008"><span class="pub-year">2008</span><div class="pub-body"><p class="pub-title">Evidence for high levels of gene flow among populations of a widely distributed anadromous lamprey <i>Entosphenus tridentatus</i> (Petromyzontidae)</p><p class="pub-cite"><span class="pub-authors"><span class="alum">Goodman</span>, D.H., S.B. Reid, M.F. Docker, <strong>A.P. Kinziger</strong>, and G.R. Haas.</span> 2008. <i>Journal of Fish Biology</i> 72:400–417.</p><p class="pub-meta"><span class="tag tag--gen">Conservation genetics</span> <a href="https://doi.org/10.1111/j.1095-8649.2007.01731.x" rel="noopener">doi:10.1111/j.1095-8649.2007.01731.x</a></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2007"><span class="pub-year">2007</span><div class="pub-body"><p class="pub-title">Mitochondrial DNA variation in the Ozark Highland members of the <i>Cottus carolinae</i> complex (Scorpaeniformes: Cottidae)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, D.H. <span class="alum">Goodman</span> and R.S. Studebaker.</span> 2007. <i>Transactions of the American Fisheries Society</i> 136:1742–1749.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1577/T06-025.1" rel="noopener">doi:10.1577/T06-025.1</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2007"><span class="pub-year">2007</span><div class="pub-body"><p class="pub-title"><i>Kabatana newberryi</i> n. sp., a microsporidium infecting the musculature of the endangered tidewater goby (<i>Eucyclogobius newberryi</i>)</p><p class="pub-cite"><span class="pub-authors"><span class="alum">McGourty</span>, K.M., <strong>A.P. Kinziger</strong>, G.H. Hendrickson, G. Goldsmith and C. Graça.</span> 2007. <i>Journal of Parasitology</i> 93:655–660.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2005"><span class="pub-year">2005</span><div class="pub-body"><p class="pub-title">Molecular systematics and classification of <i>Cottus</i> and the Baikalian cottoids (Scorpaeniformes)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, R.M. Wood and D.A. Neely.</span> 2005. <i>Copeia</i> 2005:303–311.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1643/CI-03-290R1" rel="noopener">doi:10.1643/CI-03-290R1</a></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2003"><span class="pub-year">2003</span><div class="pub-body"><p class="pub-title">Evidence supporting two new forms and one previously described race within the <i>Cottus carolinae</i> species-complex from the Ozark Highlands</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong></span> 2003. <i>American Midland Naturalist</i> 149:418–424.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1674/0003-0031(2003)149%5B0418:ESTNFA%5D2.0.CO;2" rel="noopener">doi:10.1674/0003-0031(2003)149[0418:ESTNFA]2.0.CO;2</a></p></div></li>
+<li class="pub" data-theme="syst" data-year="2003"><span class="pub-year">2003</span><div class="pub-body"><p class="pub-title">Molecular systematics of the polytypic species <i>Cottus hypselurus</i> (Teleostei: Cottidae)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong> and R.M. Wood.</span> 2003. <i>Copeia</i> 2003:624–627.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1643/CI-02-240R" rel="noopener">doi:10.1643/CI-02-240R</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="2003"><span class="pub-year">2003</span><div class="pub-body"><p class="pub-title">Change in the energy density of the sea lamprey (<i>Petromyzon marinus</i>) during its parasitic phase: implications for modeling food consumption and growth</p><p class="pub-cite"><span class="pub-authors">Cochran, P.A., J.Y. Hodgson, and <strong>A.P. Kinziger</strong>.</span> 2003. <i>Journal of Great Lakes Research</i> 29 (Supplement 1):297–306.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://www.sciencedirect.com/science/article/pii/S038013300370495X" rel="noopener">Article</a></p></div></li>
+<li class="pub first-of-year" data-theme="ecol" data-year="2002"><span class="pub-year">2002</span><div class="pub-body"><p class="pub-title">Additional cases of predation on horsehair worms (Phylum Nematomorpha), with a first record for Missouri</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, P.A. Cochran, and J.A. Cochran.</span> 2002. <i>MO. Acad. Sci. Bull.</i> 36:11–13.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2001"><span class="pub-year">2001</span><div class="pub-body"><p class="pub-title">A narrow hybrid zone between two species of <i>Cottus</i> in Wills Creek, Potomac drainage</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong> and R.L. Raesly.</span> 2001. <i>Journal of Heredity</i> 92:309–314.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://academic.oup.com/jhered/article-abstract/92/4/309/2187151" rel="noopener">Article</a></p></div></li>
+<li class="pub" data-theme="syst" data-year="2001"><span class="pub-year">2001</span><div class="pub-body"><p class="pub-title">Systematics of <i>Etheostoma tippecanoe</i> and <i>Etheostoma denoncourti</i> (Perciformes: Percidae)</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, R.M. Wood, and S.A. Welsh.</span> 2001. <i>Copeia</i> 2001:235–239.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://www.jstor.org/stable/1448116" rel="noopener">Article</a></p></div></li>
+<li class="pub first-of-year" data-theme="syst" data-year="2000"><span class="pub-year">2000</span><div class="pub-body"><p class="pub-title">New species of <i>Cottus</i> (Teleostei: Cottidae) from the Middle Atlantic Eastern United States</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong>, R.L. Raesly, and D.A. Neely.</span> 2000. <i>Copeia</i> 2000:1007–1018.</p><p class="pub-meta"><span class="tag tag--plain">Systematics</span> <a href="https://doi.org/10.1643/0045-8511(2000)000%5B1007:NSOCTC%5D2.0.CO;2" rel="noopener">doi:10.1643/0045-8511(2000)000[1007:NSOCTC]2.0.CO;2</a></p></div></li>
+<li class="pub first-of-year" data-theme="ecol" data-year="1999"><span class="pub-year">1999</span><div class="pub-body"><p class="pub-title">Testing and extension of a sea lamprey feeding model</p><p class="pub-cite"><span class="pub-authors">Cochran, P.A., W.D. Swink, and <strong>A.P. Kinziger</strong>.</span> 1999. <i>Transactions of the American Fisheries Society</i> 128:403–413.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span> <a href="https://doi.org/10.1577/1548-8659(1999)128%3C0403:TAEOAS%3E2.0.CO;2" rel="noopener">doi:10.1577/1548-8659(1999)128&lt;0403:TAEOAS&gt;2.0.CO;2</a></p></div></li>
+<li class="pub" data-theme="ecol" data-year="1999"><span class="pub-year">1999</span><div class="pub-body"><p class="pub-title">Predation on horsehair worms (Phylum Nematomorpha)</p><p class="pub-cite"><span class="pub-authors">Cochran, P.A., <strong>A.P. Kinziger</strong>, and W.J. Poly.</span> 1999. <i>Journal of Freshwater Ecology</i> 14:211–218.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub first-of-year" data-theme="ecol" data-year="1998"><span class="pub-year">1998</span><div class="pub-body"><p class="pub-title">Comparison of weight-length regressions for slimy sculpin (<i>Cottus cognatus</i>) and mottled sculpin (<i>C. bairdi</i>) from the West Twin river drainage, Wisconsin</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong></span> 1998. <i>BIOS</i> 69:1–6.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub first-of-year" data-theme="ecol" data-year="1997"><span class="pub-year">1997</span><div class="pub-body"><p class="pub-title"><i>Hexagenia bilineata</i> (Ephemeroptera: Ephemeridae) persists at low levels of abundance in the lower Fox river, Wisconsin</p><p class="pub-cite"><span class="pub-authors">Cochran, P.A. and <strong>A.P. Kinziger</strong>.</span> 1997. <i>Great Lakes Entomologist</i> 30:89–92.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+<li class="pub" data-theme="ecol" data-year="1997"><span class="pub-year">1997</span><div class="pub-body"><p class="pub-title">Winter roost habitat and diet of short-eared owls (<i>Asio flammeus</i>) in Door County, Wisconsin</p><p class="pub-cite"><span class="pub-authors"><strong>Kinziger, A.P.</strong></span> 1997. <i>Passenger Pigeon</i> 59:45–52.</p><p class="pub-meta"><span class="tag tag--plain">Ecology and natural history</span></p></div></li>
+    </ol>
+
+    <p class="more">Student theses are listed with <a href="#alumni">lab alumni</a>.</p>
+  </div>
+</section>
+
+<section class="view" id="join" data-view="join" aria-label="Join the lab">
+  <div class="wrap">
+    <div class="page-head head-split">
+      <div>
+        <h1>Join the lab</h1>
+        <p class="lede">We take M.S. students through the Natural Resources graduate program at Cal Poly Humboldt, in the Fisheries concentration. The lab usually has about three graduate students at a time, so space is limited.</p>
+      </div>
+      <figure class="fig"><img src="img/little-jones-creek-2014.jpg" width="1200" height="900" alt="A researcher holds a tall survey rod beside a waterfall that drops into a pool in a forested ravine." loading="lazy" decoding="async"><figcaption><span class="where">Little Jones Creek, Smith River basin</span> Measuring a waterfall during a survey of barriers to fish movement, October 2014. <span class="credit">Photo: Kinziger Lab</span></figcaption></figure>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Graduate students</h2></div>
+      <div>
+        <ul class="join-list"><li><h3>Get in touch</h3><p>If your research interests match the lab&#x27;s work in environmental DNA and conservation genetics, let Andrew know. It helps to send a CV or résumé, a writing sample, and a short description of your research experience, what you want to study and your long-term goals.</p></li><li><h3>Visit or call</h3><p>If your interests fit and the lab has space, Andrew may invite you to visit campus or set up a call.</p></li><li><h3>Apply through Cal State Apply</h3><p>The application asks for transcripts, three references, a statement of purpose and a résumé. <a href="https://www.humboldt.edu/cnrs/graduate-programs/natural-resources" rel="noopener">Application steps for the Natural Resources M.S.</a></p></li></ul>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Deadlines</h2></div>
+      <div>
+        <table class="deadlines"><tbody><tr><th scope="row">Fall admission</th><td>Applications open October 1 and close February 1</td></tr><tr><th scope="row">Spring admission</th><td>Applications open August 1 and close September 30</td></tr></tbody></table>
+        <p class="refs">Source: <a href="https://www.humboldt.edu/admission-aid/how-to-apply/graduate" rel="noopener">Graduate application deadlines at Cal Poly Humboldt</a></p>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Funding</h2></div>
+      <div class="prose"><p>Most graduate students in the lab receive funding that covers a small salary, full or partial tuition, research expenses and travel to conferences. Funding is not guaranteed, and it is not a requirement for admission. Support usually comes from the research grant or contract behind the thesis project, supplemented by teaching or graduate assistantships and scholarships. We encourage students to apply for Fisheries Biology scholarships and for California State University awards such as COAST and CSUPERB.</p></div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><h2>Undergraduates</h2></div>
+      <div class="prose"><p>Cal Poly Humboldt undergraduates work in the lab on eDNA projects: filtering water, extracting DNA and setting up qPCR. FISH 474, Conservation Genetics of Fish and Wildlife, includes hands-on eDNA labs. If you want research experience, email Andrew or stop by Wildlife and Fisheries 214.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="wrap">
+    <div>
+      <h2>Contact</h2>
+      <p>Dr. Andrew Kinziger</p>
+      <p>Department of Fisheries Biology</p><p>Cal Poly Humboldt</p><p>1 Harpst Street, Arcata, CA 95521</p>
+    </div>
+    <div>
+      <h3>Find us</h3>
+      <p>Office: Wildlife and Fisheries 210</p><p>Lab: Wildlife and Fisheries 214</p>
+      <p>Phone: (707) 826-3944</p>
+      <p>Email: <a href="mailto:andrew.kinziger@humboldt.edu">andrew.kinziger@humboldt.edu</a></p>
+    </div>
+    <div>
+      <h3>At Cal Poly Humboldt</h3>
+      <ul><li><a href="https://www.humboldt.edu/fisheries-biology" rel="noopener">Department of Fisheries Biology</a></li><li><a href="https://www.humboldt.edu/cnrs/graduate-programs/natural-resources" rel="noopener">Natural Resources M.S. program</a></li><li><a href="https://www.humboldt.edu/fisheries-biology/andrew-kinziger" rel="noopener">Faculty profile</a></li></ul>
+    </div>
+    <p class="fine">The Kinziger Lab, Department of Fisheries Biology, Cal Poly Humboldt. Last updated November 2026.</p>
+  </div>
+</footer>
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var views = Array.prototype.slice.call(document.querySelectorAll(".view"));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("[data-nav]"));
+
+  // Every address the site answers to. v = view to show, a = element to scroll to, f = publication filter.
+  var routes = {
+    "": { v: "home" },
+    "home": { v: "home" },
+    "research": { v: "research" },
+    "edna": { v: "research", a: "edna" },
+    "genetics": { v: "research", a: "genetics" },
+    "partners": { v: "research", a: "partners" },
+    "people": { v: "people" },
+    "alumni": { v: "people", a: "alumni" },
+    "publications": { v: "publications" },
+    "publications-edna": { v: "publications", f: "edna" },
+    "join": { v: "join" }
+  };
+
+  function activate(name) {
+    views.forEach(function (el) {
+      el.classList.toggle("is-active", el.getAttribute("data-view") === name);
+    });
+    navLinks.forEach(function (a) {
+      if (a.getAttribute("data-nav") === name && name !== "home") {
+        a.setAttribute("aria-current", "page");
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  function currentView() {
+    var el = document.querySelector(".view.is-active");
+    return el ? el.getAttribute("data-view") : null;
+  }
+
+  function route() {
+    var hash = (window.location.hash || "").replace(/^#/, "");
+    if (hash === "contact" || hash === "main") {
+      if (!currentView()) { activate("home"); }
+      var target = document.getElementById(hash);
+      if (target) { target.scrollIntoView(); }
+      return;
+    }
+    var r = routes[hash] || routes[""];
+    activate(r.v);
+    if (r.f) { setFilter(r.f); }
+    if (r.a) {
+      var el = document.getElementById(r.a);
+      if (el) { el.scrollIntoView(); }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // ---- publications: theme chips and word search
+  var list = document.getElementById("publist");
+  var pubs = list ? Array.prototype.slice.call(list.querySelectorAll(".pub")) : [];
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  var query = document.getElementById("pubq");
+  var count = document.getElementById("pubcount");
+  var empty = document.getElementById("pubempty");
+  var theme = "all";
+
+  function applyFilter() {
+    var q = query ? query.value.trim().toLowerCase() : "";
+    var shown = 0;
+    var lastYear = null;
+    pubs.forEach(function (li) {
+      var ok = (theme === "all" || li.getAttribute("data-theme") === theme) &&
+        (!q || li.textContent.toLowerCase().indexOf(q) !== -1);
+      li.hidden = !ok;
+      if (ok) {
+        shown += 1;
+        var y = li.getAttribute("data-year");
+        li.classList.toggle("first-of-year", y !== lastYear);
+        lastYear = y;
+      }
+    });
+    if (count) {
+      count.textContent = shown === pubs.length
+        ? "Showing all " + pubs.length + " papers"
+        : "Showing " + shown + " of " + pubs.length + " papers";
+    }
+    if (empty) { empty.hidden = shown !== 0; }
+  }
+
+  function setFilter(name) {
+    theme = name;
+    chips.forEach(function (c) {
+      c.setAttribute("aria-pressed", c.getAttribute("data-filter") === name ? "true" : "false");
+    });
+    applyFilter();
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () { setFilter(c.getAttribute("data-filter")); });
+  });
+  if (query) { query.addEventListener("input", applyFilter); }
+
+  // ---- draft notes on and off (remembered for this browser only)
+  var toggle = document.getElementById("notes-toggle");
+  function setNotes(on) {
+    root.classList.toggle("notes-off", !on);
+    if (toggle) {
+      toggle.textContent = on ? "Hide notes" : "Show notes";
+      toggle.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { window.localStorage.setItem("kl-notes", on ? "on" : "off"); } catch (e) { /* storage unavailable */ }
+  }
+  if (toggle) {
+    var saved = null;
+    try { saved = window.localStorage.getItem("kl-notes"); } catch (e) { /* storage unavailable */ }
+    setNotes(saved !== "off");
+    toggle.addEventListener("click", function () {
+      setNotes(root.classList.contains("notes-off"));
+    });
+  }
+
+  window.addEventListener("hashchange", route);
+  route();
+})();
+
+</script>
+</body>
+</html>
